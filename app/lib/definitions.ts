@@ -1,13 +1,43 @@
-// This file contains type definitions for your data.
-// It describes the shape of the data, and what data type each property should accept.
-// For simplicity of teaching, we're manually defining these types.
-// However, these types are generated automatically if you're using an ORM such as Prisma.
 export type User = {
   id: string;
   name: string;
   email: string;
   password: string;
+  image_url: string;
+  role: 'admin' | 'user';
 };
+
+export type PrefferencesTable = {
+  id: string;
+  daily_fee: number;
+  home_base: string;
+  user_id: string;
+  rounding_rule: 'math' | 'up';
+  currency: 'eur' | 'usd';
+  language: 'deutsch' | 'english' | 'magyar';
+};
+
+export type TravelsTable = {
+  id: string;
+  user_id: string;
+  date: string;
+  destination: string;
+  start_time: string;
+  end_time: string;
+  duration: number;
+  rounded_durration: number;
+  daily_amount: number;
+};
+
+export type Revenue = {
+  month: string;
+  revenue: number;
+  month_order: number;
+  year: number;
+};
+
+
+//******************************
 
 export type Customer = {
   id: string;
@@ -24,11 +54,6 @@ export type Invoice = {
   // In TypeScript, this is called a string union type.
   // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
   status: 'pending' | 'paid';
-};
-
-export type Revenue = {
-  month: string;
-  revenue: number;
 };
 
 export type LatestInvoice = {
