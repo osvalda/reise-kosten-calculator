@@ -6,6 +6,7 @@ import {
   InvoicesTable,
   LatestInvoiceRaw,
   Revenue,
+  PreferencesTable
 } from './definitions';
 import { formatCurrency } from './utils';
 
@@ -29,6 +30,19 @@ export async function fetchRevenue() {
     throw new Error('Failed to fetch revenue data.');
   }
 }
+
+export async function fetchUserPreferences(userId : string) {
+  try {
+    const data = await sql<PreferencesTable[]>`SELECT * FROM preferences where user_id = ${`${userId}`} limit 1;`;
+
+    return data;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch user preferences data.');
+  }
+}
+
+/************************************ */
 
 export async function fetchLatestInvoices() {
   try {

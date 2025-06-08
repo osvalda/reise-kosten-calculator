@@ -5,6 +5,7 @@ import {
   HomeIcon,
   MapIcon,
   MapPinIcon,
+  Cog6ToothIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -31,6 +32,10 @@ const links = [
   { name: 'Routes',
     href: '/dashboard/routes',
     icon: MapIcon
+  },
+  { name: 'Prefferences',
+    href: '/dashboard/prefferences',
+    icon: Cog6ToothIcon
   },
 ];
 

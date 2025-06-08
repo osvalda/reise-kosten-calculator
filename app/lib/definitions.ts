@@ -7,7 +7,7 @@ export type User = {
   role: 'admin' | 'user';
 };
 
-export type PrefferencesTable = {
+export type PreferencesTable = {
   id: string;
   daily_fee: number;
   home_base: string;
