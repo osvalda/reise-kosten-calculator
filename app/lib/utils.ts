@@ -1,7 +1,7 @@
 import { Revenue } from './definitions';
 
 export const formatCurrency = (amount: number) => {
-  return (amount / 100).toLocaleString('en-US', {
+  return (amount).toLocaleString('en-US', {
     style: 'currency',
     currency: 'USD',
   });
@@ -19,6 +19,19 @@ export const formatDateToLocal = (
   };
   const formatter = new Intl.DateTimeFormat(locale, options);
   return formatter.format(date);
+};
+
+export const formatTime = (
+  time: string
+) => {
+  var remove_after= time.lastIndexOf(':');
+  return time.substring(0, remove_after);
+};
+
+export const formatDuration = (
+  duration: number
+) => {
+  return Math.trunc(duration / 60) + ":" + duration % 60;
 };
 
 export const generateYAxis = (revenue: Revenue[]) => {
