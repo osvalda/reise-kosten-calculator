@@ -1,4 +1,4 @@
-import { UpdateTravel, DeleteTravel } from '@/app/ui/invoices/buttons';
+import { UpdateTravel, DeleteTravel } from '@/app/ui/travels/buttons';
 import { formatDateToLocal, formatCurrency, formatTime, formatDuration } from '@/app/lib/utils';
 import { fetchFilteredTravels } from '@/app/lib/data';
 
@@ -66,7 +66,7 @@ export default async function InvoicesTable({
                   Rounded (h)
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Daily Ammount 
+                  Daily Ammount
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -95,7 +95,7 @@ export default async function InvoicesTable({
                     {formatDuration(travel.duration)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDuration(travel.rounded_durration)}
+                    {formatDuration(travel.rounded_duration)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(travel.daily_amount)}

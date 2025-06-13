@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { generatePagination } from '@/app/lib/utils';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Button, Tooltip } from "@radix-ui/themes";
+import { Button, IconButton } from "@radix-ui/themes";
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
@@ -74,11 +74,11 @@ function PaginationNumber({
   return isActive || position === 'middle' ? (
     <Button>{page}</Button>
   ) : (
-    <Button>
+    <IconButton>
       <Link href={href}>
         {page}
       </Link>
-    </Button>
+    </IconButton>
   );
 }
 
@@ -100,10 +100,10 @@ function PaginationArrow({
 
   return isDisabled ? (<Button disabled>{icon}</Button>
   ) : (
-    <Button>
+    <IconButton>
       <Link href={href}>
         {icon}
       </Link>
-    </Button>
+    </IconButton>
   );
 }

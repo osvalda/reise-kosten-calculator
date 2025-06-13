@@ -1,6 +1,7 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Button, Tooltip } from "@radix-ui/themes";
+import { Button, Tooltip, IconButton } from "@radix-ui/themes";
 import Link from 'next/link';
+import { deleteTravel } from '@/app/lib/actions';
 
 export function CreateTravel() {
   return (
@@ -16,21 +17,24 @@ export function CreateTravel() {
 export function UpdateTravel({ id }: { id: string }) {
   return (
     <Tooltip content="Modify the travel">
-      <Button>
-        <Link href="/dashboard/travels">
+      <IconButton>
+        <Link href={`/dashboard/travels/${id}/edit`}>
           <PencilIcon className="w-5" />
         </Link>
-      </Button>
+      </IconButton>
     </Tooltip>
   );
 }
 
 export function DeleteTravel({ id }: { id: string }) {
+  const deleteTravelWithId = deleteTravel.bind(null, id);
   return (
-    <Tooltip content="Delete the travel">
-      <Button type="submit">
-        <TrashIcon className="w-5" />
-      </Button>
-    </Tooltip>
+    <form action={deleteTravelWithId}>
+      <Tooltip content="Delete the travel">
+        <IconButton type="submit">
+          <TrashIcon className="w-5" />
+        </IconButton>
+      </Tooltip>
+    </form>
   );
 }

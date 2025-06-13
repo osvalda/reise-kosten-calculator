@@ -10,12 +10,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider attribute="class">
           <Theme accentColor="crimson" grayColor="sand" radius="large" scaling="95%">
             {children}
-            <ThemePanel />
+            {/* <ThemePanel /> */}
           </Theme>
         </ThemeProvider>
       </body>

@@ -57,7 +57,8 @@ export async function fetchFilteredTravels(
       FROM travels
       WHERE
         travels.destination ILIKE ${`%${query}%`} OR
-        CAST(travels.date AS VARCHAR) ILIKE ${`%${query}%`}
+        CAST(travels.date AS VARCHAR) ILIKE ${`%${query}%`} OR
+        CAST(travels.duration AS VARCHAR) ILIKE ${`%${query}%`}
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
@@ -83,6 +84,28 @@ export async function fetchTravelsPages(query: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of invoices.');
+  }
+}
+
+
+export async function fetchTravelById(id: string) {
+  try {
+    const data = await sql<TravelsTable[]>`
+      SELECT
+        *
+      FROM travels WHERE travels.id = ${id};
+    `;
+
+    const travel = data.map((travel) => ({
+      ...travel,
+      // Convert amount from cents to dollars
+      // amount: invoice.amount / 100,
+    }));
+
+    return travel[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch travel by Id.');
   }
 }
 

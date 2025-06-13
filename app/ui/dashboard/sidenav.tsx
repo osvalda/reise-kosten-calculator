@@ -18,9 +18,11 @@ export default function SideNav() {
         <NavLinks />
         <div className="hidden h-auto w-full grow rounded-md md:block"></div>
         <form>
-          <Button id='navBtn'>
-            <PowerIcon className="w-6" />
-            <Text className="hidden md:block">Sign Out</Text>
+          <Button id='navBtn' variant='outline'>
+            <Flex direction={"row"} justify={'start'} width="100%" align={"center"} gap="2">
+              <PowerIcon className="w-6" />
+              <Text className="hidden md:block">Sign Out</Text>
+            </Flex>
           </Button>
         </form>
       </Flex>

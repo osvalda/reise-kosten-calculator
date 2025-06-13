@@ -10,7 +10,7 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { Button, Tooltip, Text} from "@radix-ui/themes";
+import { Button, Tooltip, Text, Flex} from "@radix-ui/themes";
 import ThemeSwitch from '../theme-switch';
 
 
@@ -52,8 +52,10 @@ export default function NavLinks() {
         return (
           <Link key={link.name} href={link.href}>
             <Button id='navBtn' variant={pathname === link.href ? "surface" : "solid"}>
-              <LinkIcon className="w-6" />
-              <Text className="hidden md:block">{link.name}</Text>
+              <Flex direction={"row"} justify={'start'} width="100%" align={"center"} gap="2">
+                <LinkIcon className="w-6" />
+                <Text className="hidden md:block">{link.name}</Text>
+              </Flex>
             </Button>
           </Link>
         );
