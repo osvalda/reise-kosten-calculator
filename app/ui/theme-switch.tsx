@@ -1,28 +1,33 @@
-import { useState, useEffect } from 'react'
 import { useTheme } from 'next-themes'
-import { Select } from "@radix-ui/themes";
+import { IconButton } from "@radix-ui/themes";
+import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 
 const ThemeSwitch = () => {
-  const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return null
+  function switchTheme() {
+    if (theme === 'dark') {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
   }
 
   return (
-    <Select.Root defaultValue={theme} onValueChange={setTheme}>
-        <Select.Trigger/>
-        <Select.Content >
-            <Select.Item value="system">System</Select.Item>
-            <Select.Item value="dark">Dark</Select.Item>
-            <Select.Item value="light">Light</Select.Item>
-        </Select.Content>
-    </Select.Root>
+    <IconButton
+			color="gray"
+			highContrast
+			style={{ margin: 0 }}
+			onClick={() =>
+				switchTheme()
+			}
+		>
+		{theme === 'dark' ? (
+			<SunIcon width="20" height="20" />
+		) : (
+			<MoonIcon width="20" height="20" />
+		)}
+		</IconButton>
   )
 }
 

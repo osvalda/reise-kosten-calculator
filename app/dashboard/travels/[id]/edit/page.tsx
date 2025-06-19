@@ -1,6 +1,6 @@
 import EditTravelForm from '@/app/ui/travels/edit-form';
 import Breadcrumbs from '@/app/ui/travels/breadcrumbs';
-// import { fetchCustomers } from '@/app/lib/data';
+import { notFound } from 'next/navigation';
 import { fetchTravelById, fetchUserPreferences } from '@/app/lib/data';
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
@@ -10,6 +10,10 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         fetchTravelById(id),
         fetchUserPreferences("410544b2-4001-4271-9855-fec4b6a6442a"),
     ]);
+
+    if (!travel) {
+        notFound();
+    }
 
     return (
         <main>

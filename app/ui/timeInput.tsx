@@ -15,7 +15,6 @@ interface CustomInputProps {
   defaultValue? : string;
 }
 
-// Custom input component
 const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>(({ label, id, defaultValue }, forwardedRef) => {
   return (
     <>

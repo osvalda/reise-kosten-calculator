@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   UserGroupIcon,
@@ -11,7 +11,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Button, Tooltip, Text, Flex} from "@radix-ui/themes";
-import ThemeSwitch from '../theme-switch';
 
 
 const links = [
@@ -60,7 +59,6 @@ export default function NavLinks() {
           </Link>
         );
       })}
-      <ThemeSwitch></ThemeSwitch>
     </>
   );
 }

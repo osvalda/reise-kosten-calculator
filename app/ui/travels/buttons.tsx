@@ -26,14 +26,24 @@ export function UpdateTravel({ id }: { id: string }) {
   );
 }
 
-export function DeleteTravel({ id }: { id: string }) {
+export function DeleteTravelTrigger() {
+  return (
+      <IconButton>
+        <Tooltip content="Delete the travel">
+          <TrashIcon className="w-5" />
+        </Tooltip>
+      </IconButton>
+  );
+}
+
+export function DeleteTravelConfirm({ id }: { id: string }) {
   const deleteTravelWithId = deleteTravel.bind(null, id);
   return (
     <form action={deleteTravelWithId}>
       <Tooltip content="Delete the travel">
-        <IconButton type="submit">
-          <TrashIcon className="w-5" />
-        </IconButton>
+        <Button type="submit">
+          <TrashIcon className="w-5" /> Delete
+        </Button>
       </Tooltip>
     </form>
   );

@@ -1,11 +1,10 @@
 'use client';
 
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
-import clsx from 'clsx';
 import Link from 'next/link';
 import { generatePagination } from '@/app/lib/utils';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Button, IconButton } from "@radix-ui/themes";
+import { Button, IconButton, Flex } from "@radix-ui/themes";
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
@@ -22,14 +21,14 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
 
   return (
     <>
-      <div className="inline-flex">
+      <Flex gap="1" >
         <PaginationArrow
           direction="left"
           href={createPageURL(currentPage - 1)}
           isDisabled={currentPage <= 1}
         />
 
-        <div className="flex -space-x-px">
+        <Flex gap="1">
           {allPages.map((page, index) => {
             let position: 'first' | 'last' | 'single' | 'middle' | undefined;
 
@@ -48,14 +47,14 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
               />
             );
           })}
-        </div>
+        </Flex>
 
         <PaginationArrow
           direction="right"
           href={createPageURL(currentPage + 1)}
           isDisabled={currentPage >= totalPages}
         />
-      </div>
+      </Flex>
     </>
   );
 }

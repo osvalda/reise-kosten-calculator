@@ -6,7 +6,7 @@ import { Button, Tooltip, Flex, Text } from "@radix-ui/themes";
 
 export default function SideNav() {
   return (
-    <div className="flex h-full flex-col px-3 py-4 md:px-2">
+    <div className="flex h-full flex-col px-3 py-4 md:px-2 bg-black">
       <Link
         className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40"
         href="/">
@@ -14,7 +14,7 @@ export default function SideNav() {
           <AcmeLogo />
         </div>
       </Link>
-      <Flex direction={{xs: "row", xl: "column"}} justify={'between'} gap="3" width="100%" flexGrow="1">
+      <Flex direction={{md: "row", xl: "column"}} justify={'between'} gap="3" width="100%" flexGrow="1">
         <NavLinks />
         <div className="hidden h-auto w-full grow rounded-md md:block"></div>
         <form>
