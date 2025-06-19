@@ -60,6 +60,7 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
     }
 
   revalidatePath('/dashboard/travels');
+  revalidatePath('/dashboard');
   redirect('/dashboard/travels');
 }
 
@@ -86,6 +87,7 @@ export async function editTravel(id: string, preferences: PreferencesTable, form
   }
 
   revalidatePath('/dashboard/travels');
+  revalidatePath('/dashboard');
   redirect('/dashboard/travels');
 }
 
@@ -97,4 +99,5 @@ export async function deleteTravel(id: string) {
 
   }
   revalidatePath('/dashboard/travels');
+  revalidatePath('/dashboard');
 }
