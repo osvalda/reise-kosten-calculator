@@ -13,7 +13,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider attribute="class">
-            <Theme accentColor="crimson" grayColor="sand" radius="large" scaling="95%">
+            <Theme accentColor="plum" radius="small">
               {children}
               {/* <ThemePanel /> */}
             </Theme>

@@ -25,3 +25,7 @@ input[type='number']::-webkit-outer-spin-button {
 #header {
   background-color: purple;
 }
+
+#sideNav {
+  background-color: #321738;
+}
