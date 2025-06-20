@@ -7,10 +7,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   <div className='flex flex-col h-screen' >
     <Header />
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
-      <Flex width={{md: "16rem"}}>
+      <Flex >
         <SideNav />
       </Flex>
-      <Flex width={{md: "16rem"}} flexGrow={"1"} p={{xl:"6", md:"12"}} overflowY={'auto'} justify={'center'}>
+      <Flex width={{md: "16rem"}} flexGrow={"1"} p={{xl:"6", md:"12"}} overflowY={'auto'} justify={'start'}>
         {children}
       </Flex>
     </div>

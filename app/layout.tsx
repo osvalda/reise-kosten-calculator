@@ -3,6 +3,16 @@ import { inter } from '@/app/ui/fonts';
 import "@radix-ui/themes/styles.css";
 import { Theme, ThemePanel } from "@radix-ui/themes";
 import { ThemeProvider } from "next-themes";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | GeldBlick',
+    default: 'GeldBlick Dashboard',
+  },
+  description: 'Travel cost collector and calculator app',
+  metadataBase: new URL('https://something.com/'),
+};
 
 export default function RootLayout({
   children,
