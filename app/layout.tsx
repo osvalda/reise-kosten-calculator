@@ -23,10 +23,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider attribute="class">
-            <Theme accentColor="plum" radius="small">
-              {children}
-              {/* <ThemePanel /> */}
-            </Theme>
+          <Theme accentColor="plum" radius="small">
+            {children}
+            {/* <ThemePanel /> */}
+          </Theme>
         </ThemeProvider>
       </body>
     </html>

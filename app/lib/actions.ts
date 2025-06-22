@@ -2,10 +2,10 @@
 
 import { z } from 'zod';
 import postgres from 'postgres';
-import { PreferencesTable } from '@/app/lib/definitions';
+import { PreferencesTable, User } from '@/app/lib/definitions';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { signIn } from '@/auth';
+import { signIn, auth, getUser } from '@/auth';
 import { AuthError } from 'next-auth';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
@@ -119,6 +119,42 @@ export async function authenticate(
           return 'Something went wrong.';
       }
     }
+    throw error;
+  }
+}
+
+export async function fetchActiveUserData(): Promise<User | undefined> {
+  try {
+    const email = await getEmailFromAuth();
+    if (!email) throw new Error("Wrong email!");
+
+    const user = await getUser(email);
+    return user;
+  } catch (error) {
+    console.error("Could not fetch active user!");
+    throw error;
+  }
+}
+
+export async function fetchUserDataByEmail(email: string | undefined): Promise<User | undefined> {
+  try {
+    if (!email) throw new Error("Wrong email!");
+
+    const user = await getUser(email);
+    return user;
+  } catch (error) {
+    console.error("Could not fetch user!");
+    throw error;
+  }
+}
+
+export async function getEmailFromAuth(): Promise<string | undefined> {
+  try {
+    const authData = await auth();
+    const email = authData?.user?.email;
+    return email;
+  } catch (error) {
+    console.error("Could not auth user!");
     throw error;
   }
 }

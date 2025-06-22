@@ -12,7 +12,6 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { Button, Tooltip, Text, Flex} from "@radix-ui/themes";
 
-
 const links = [
   { name: 'Home',
     href: '/dashboard',
