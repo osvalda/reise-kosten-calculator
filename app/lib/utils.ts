@@ -1,4 +1,4 @@
-import { Revenue } from './definitions';
+import { Addresses, Revenue } from './definitions';
 
 export const formatCurrency = (amount: number) => {
   return (amount).toLocaleString('en-US', {
@@ -26,6 +26,13 @@ export const formatTime = (
 ) => {
   var remove_after= time.lastIndexOf(':');
   return time.substring(0, remove_after);
+};
+
+export const cutMeters = (
+  dist: string
+) => {
+  var remove_after= dist.lastIndexOf('.');
+  return dist.substring(0, remove_after);
 };
 
 export const formatDuration = (
@@ -78,3 +85,11 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export const createUrl = (url: string, aId: Addresses) => {
+  let newUrl = url;
+  Object.entries(aId).forEach(([key, value]) => {
+    newUrl = newUrl.replace(`(${key})`, value);
+  });
+  return newUrl;
+}

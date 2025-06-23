@@ -2,17 +2,19 @@
 
 import { z } from 'zod';
 import postgres from 'postgres';
-import { PreferencesTable, User } from '@/app/lib/definitions';
+import { PreferencesTable, User, Addresses } from '@/app/lib/definitions';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn, auth, getUser } from '@/auth';
 import { AuthError } from 'next-auth';
+import { createUrl } from './utils';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 const FormSchema = z.object({
   id: z.string(),
   destination: z.string().min(3, {message: "Please provide a destination."}),
+  zip: z.string().min(4, {message: "Please provide a ZIP."}),
   date: z.coerce.date({
     invalid_type_error: 'Please provide date of travel.',
   }),
@@ -25,6 +27,7 @@ const CreateTravel = FormSchema.omit({ id: true });
 export type State = {
   errors?: {
     destination?: string[];
+    zip?: string[];
     date?: string[];
     startTime?: string[];
     endTime?: string[];
@@ -35,6 +38,7 @@ export type State = {
 export async function createTravel(preferences: PreferencesTable, prevState: State, formData: FormData) {
     const validatedFields = CreateTravel.safeParse({
         destination: formData.get('destination'),
+        zip: formData.get('zip'),
         date: formData.get('date'),
         startTime: formData.get('startTime'),
         endTime: formData.get('endTime'),
@@ -46,19 +50,20 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
         message: 'Missing Fields. Failed to Create Travel.',
       };
     }
-    const { destination, date, startTime, endTime } = validatedFields.data;
+    const { destination, zip, date, startTime, endTime } = validatedFields.data;
 
     let duration = 111;
     let roundedDuration = 222;
     let dailyAmount = preferences.daily_fee * 10;
+    let finalDestination = destination + ", " + zip;
 
     try {
       await sql`
         INSERT INTO travels (user_id, destination, date, start_time, end_time, duration, rounded_duration, daily_amount)
-        VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTime}, ${endTime}, ${duration}, ${roundedDuration}, ${dailyAmount})
+        VALUES (${preferences.user_id}, ${finalDestination}, ${date}, ${startTime}, ${endTime}, ${duration}, ${roundedDuration}, ${dailyAmount})
       `;
     } catch (error) {
-
+      console.error(error);
     }
 
   revalidatePath('/dashboard/travels');
@@ -155,6 +160,46 @@ export async function getEmailFromAuth(): Promise<string | undefined> {
     return email;
   } catch (error) {
     console.error("Could not auth user!");
+    throw error;
+  }
+}
+
+const geocodeAddressUrl = 'https://mapquasar.p.rapidapi.com/geocode?address=';
+const distanceUrl = "https://mapquasar.p.rapidapi.com/calculate-distance?unit=km&lat2=(lat2)&lon2=(lon2)&lat1=(lat1)&lon1=(lon1)";
+const addressDetailsUrl = "https://mapquasar.p.rapidapi.com/reverse-geocode?longitude=(lon1)&latitude=(lat1)";
+const options = {
+	method: 'GET',
+	headers: {
+		'x-rapidapi-key': '601156ccdamshd55c9436266696ap142612jsnb4a8b927a2a4',
+		'x-rapidapi-host': 'mapquasar.p.rapidapi.com'
+	}
+};
+
+export async function getGeocodeAddress(address: string): Promise<any | undefined> {
+  return fetchDestinationData(geocodeAddressUrl + address);
+}
+
+export async function getAddressDetails(lat1: string, lon1: string): Promise<any | undefined> {
+  let addresses = <Addresses>{ lon1 : lon1, lat1 : lat1 };
+  const url = createUrl(addressDetailsUrl, addresses);
+  console.log("feloldott details url: " + url);
+  return fetchDestinationData(url);
+}
+
+export async function getDistanceAsKm(lat1: string, lon1: string, lat2: string, lon2: string, ): Promise<any | undefined> {
+  let addresses = <Addresses>{ lon1 : lon1, lat1 : lat1, lon2 : lon2, lat2 : lat2 };
+  const url = createUrl(distanceUrl, addresses);
+
+  return fetchDestinationData(url);
+}
+
+async function fetchDestinationData(url: string): Promise<any | undefined> {
+  try {
+    const response = await fetch(url, options);
+    const jsresult = await response.json();
+    return jsresult;
+  } catch (error) {
+    console.error("Could not fetch data!");
     throw error;
   }
 }
