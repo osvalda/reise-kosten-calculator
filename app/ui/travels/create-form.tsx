@@ -20,7 +20,7 @@ export default function Form({ preferences }: { preferences: PreferencesTable[] 
   const [distance, setDistance] = useState("");
 
   const actionWithPrefrences = createTravel.bind(null, preferences[0]);
-  const [state, formAction] = useActionState(actionWithPrefrences, initialState);
+  const [state, formAction, isPending] = useActionState(actionWithPrefrences, initialState);
 
   const handleDestination = async (source: string) => {
     setLocationPending(true);
@@ -128,8 +128,8 @@ export default function Form({ preferences }: { preferences: PreferencesTable[] 
 
       <InputMask id="endTime" component={CustomInput} mask="__:__" replacement={{ _: /\d/ }} label="Select End Time" />
       <div id="customer-error" aria-live="polite" aria-atomic="true">
-        {state.errors?.startTime &&
-          state.errors.startTime.map((error: string) => (
+        {state.errors?.endTime &&
+          state.errors.endTime.map((error: string) => (
             <p className="mt-2 text-sm text-red-500" key={error}>
               {error}
             </p>
@@ -138,15 +138,15 @@ export default function Form({ preferences }: { preferences: PreferencesTable[] 
 
       <div className="mt-6 flex justify-end gap-4">
       <Tooltip content="Back to Travels page">
-        <Button>
-          <Link href="/dashboard/travels">
+        <Link href="/dashboard/travels">
+          <Button>
             Cancel
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </Tooltip>
 
       <Tooltip content="Submit the form with data">
-        <Button type="submit">
+        <Button type="submit" loading={isPending}>
           Create Travel
         </Button>
       </Tooltip>

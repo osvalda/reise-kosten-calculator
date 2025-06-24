@@ -17,22 +17,22 @@ export function CreateTravel() {
 export function UpdateTravel({ id }: { id: string }) {
   return (
     <Tooltip content="Modify the travel">
-      <IconButton>
-        <Link href={`/dashboard/travels/${id}/edit`}>
+      <Link href={`/dashboard/travels/${id}/edit`}>
+        <IconButton>
           <PencilIcon className="w-5" />
-        </Link>
-      </IconButton>
+        </IconButton>
+      </Link>
     </Tooltip>
   );
 }
 
 export function DeleteTravelTrigger() {
   return (
-      <IconButton>
-        <Tooltip content="Delete the travel">
+      <Tooltip content="Delete the travel">
+        <IconButton>
           <TrashIcon className="w-5" />
-        </Tooltip>
-      </IconButton>
+        </IconButton>
+      </Tooltip>
   );
 }
 

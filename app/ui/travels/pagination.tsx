@@ -71,13 +71,13 @@ function PaginationNumber({
   isActive: boolean;
 }) {
   return isActive || position === 'middle' ? (
-    <Button>{page}</Button>
+    <Button variant={isActive ? "surface" : "solid"}>{page}</Button>
   ) : (
-    <IconButton>
-      <Link href={href}>
+    <Link href={href}>
+      <IconButton>
         {page}
-      </Link>
-    </IconButton>
+      </IconButton>
+    </Link>
   );
 }
 
@@ -92,17 +92,17 @@ function PaginationArrow({
 }) {
 
   const icon = direction === 'left' ? (
-      <ArrowLeftIcon className="w-4" />
-    ) : (
+    <ArrowLeftIcon className="w-4" />
+  ) : (
       <ArrowRightIcon className="w-4" />
-    );
+  );
 
   return isDisabled ? (<Button disabled>{icon}</Button>
   ) : (
-    <IconButton>
-      <Link href={href}>
+    <Link href={href}>
+      <IconButton>
         {icon}
-      </Link>
-    </IconButton>
+      </IconButton>
+    </Link>
   );
 }
