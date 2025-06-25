@@ -2,13 +2,17 @@ import EditTravelForm from '@/app/ui/travels/edit-form';
 import Breadcrumbs from '@/app/ui/travels/breadcrumbs';
 import { notFound } from 'next/navigation';
 import { fetchTravelById, fetchUserPreferences } from '@/app/lib/data';
+import { fetchActiveUserData } from '@/app/lib/actions';
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
+    const activeUser = await fetchActiveUserData();
+    const userId = activeUser?.id;
+
     const params = await props.params;
     const id = params.id;
     const [travel, preferences] = await Promise.all([
         fetchTravelById(id),
-        fetchUserPreferences("410544b2-4001-4271-9855-fec4b6a6442a"),
+        fetchUserPreferences(userId? userId : ""),
     ]);
 
     if (!travel) {

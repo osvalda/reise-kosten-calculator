@@ -1,9 +1,16 @@
 import { fetchUserPreferences } from '@/app/lib/data';
 import { Flex, DataList, Badge, Heading, Code, Link, Separator } from "@radix-ui/themes";
+import { Metadata } from 'next';
+import { fetchActiveUserData } from '@/app/lib/actions';
+
+export const metadata: Metadata = {
+  title: 'Preferences',
+};
 
 export default async function Page() {
-  const userPreferences = await fetchUserPreferences("410544b2-4001-4271-9855-fec4b6a6442a");
-
+  const activeUser = await fetchActiveUserData();
+  const id = activeUser?.id;
+  const userPreferences = await fetchUserPreferences(id? id : "");
 
   return <div><Heading>Preferences Page</Heading>
     <Separator my="3" size="4" />
@@ -12,7 +19,7 @@ export default async function Page() {
 		<DataList.Label minWidth="88px">Status</DataList.Label>
 		<DataList.Value>
 			<Badge color="jade" variant="soft" radius="full">
-				Admin
+				{activeUser?.role}
 			</Badge>
 		</DataList.Value>
 	</DataList.Item>
@@ -34,7 +41,7 @@ export default async function Page() {
 	</DataList.Item>
 	<DataList.Item>
 		<DataList.Label minWidth="88px">Name</DataList.Label>
-		<DataList.Value>???</DataList.Value>
+		<DataList.Value>{activeUser?.name}</DataList.Value>
 	</DataList.Item>
 	<DataList.Item>
 		<DataList.Label minWidth="88px">Currency</DataList.Label>
@@ -59,7 +66,7 @@ export default async function Page() {
 	<DataList.Item>
 		<DataList.Label minWidth="88px">Email</DataList.Label>
 		<DataList.Value>
-			<Link href="mailto:vlad@workos.com">????</Link>
+			<Link href={activeUser?.email}>{activeUser?.email}</Link>
 		</DataList.Value>
 	</DataList.Item>
 </DataList.Root>

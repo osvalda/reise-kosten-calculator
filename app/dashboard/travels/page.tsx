@@ -9,7 +9,7 @@ import { fetchTravelsPages } from '@/app/lib/data';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Locations',
+  title: 'Travels',
 };
 
 export default async function Page(props: {

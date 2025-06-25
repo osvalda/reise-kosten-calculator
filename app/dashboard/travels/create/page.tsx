@@ -1,9 +1,12 @@
 import Form from '@/app/ui/travels/create-form';
 import Breadcrumbs from '@/app/ui/travels/breadcrumbs';
 import { fetchUserPreferences } from '@/app/lib/data';
+import { fetchActiveUserData } from '@/app/lib/actions';
 
 export default async function Page() {
-  const preferernces = await fetchUserPreferences("410544b2-4001-4271-9855-fec4b6a6442a");
+  const activeUser = await fetchActiveUserData();
+  const userId = activeUser?.id;
+  const preferernces = await fetchUserPreferences(userId? userId : "");
 
   return (
     <main>

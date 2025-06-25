@@ -8,7 +8,7 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: {
     template: '%s | AnlagePro',
-    default: 'AnlagePro Dashboard',
+    default: 'AnlagePro',
   },
   description: 'Travel cost collector and calculator app',
   metadataBase: new URL('https://something.com/'),
