@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     default: 'AnlagePro',
   },
   description: 'Travel cost collector and calculator app',
-  metadataBase: new URL('https://something.com/'),
+  metadataBase: new URL('https://anlage.pro/'),
 };
 
 export default function RootLayout({
