@@ -78,9 +78,9 @@ export default function LoginForm() {
                     </Flex>
                 )}
 				<Flex mt="6" justify="center" gap="3">
-					{/* <Button variant="outline" disabled>
+					<Button variant="outline" disabled>
                         Create an account
-					</Button> */}
+					</Button>
                     <input type="hidden" name="redirectTo" value={callbackUrl}/>
                     <Button type="submit" aria-disabled={isPending} loading={isPending} style={{flexGrow: "1", cursor:"pointer"}}>
                         Log in <ArrowRightIcon className="h-5 w-5" />

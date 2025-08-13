@@ -1,19 +1,27 @@
 .hero-container {
     background: 
-        /* linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), */
+        linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
         url(../public/landing/hero_pic.jpg) center / cover no-repeat;
     min-height: 80vh;
-    display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-
-    padding: 120px 20px;
-    position: relative;
 }
 
 .hero-content {
     color: white;
-    max-width: 800px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.header {
+    background-color: #2b2b2b;
+}
+
+.footer {
+    background-color: #474747;
+}
+
+.main {
+    padding: 0;
+    margin: 0;
 }

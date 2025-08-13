@@ -28,11 +28,11 @@ export function UpdateTravel({ id }: { id: string }) {
 
 export function DeleteTravelTrigger() {
   return (
+    <IconButton>
       <Tooltip content="Delete the travel">
-        <IconButton>
           <TrashIcon className="w-5" />
-        </IconButton>
       </Tooltip>
+    </IconButton>
   );
 }
 
