@@ -1,4 +1,4 @@
-import RevenueChart from '@/app/ui/dashboard/revenue-chart';
+import RevenueChart from '@/app/ui/dashboard/charts/revenue-chart-container';
 import CardWrapper from '@/app/ui/dashboard/cards';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton, CardsSkeleton } from '@/app/ui/skeletons';
