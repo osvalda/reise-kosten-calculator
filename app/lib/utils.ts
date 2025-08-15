@@ -41,18 +41,6 @@ export const formatDuration = (
   return Math.trunc(duration / 60) + ":" + duration % 60;
 };
 
-export const generateYAxis = (revenue: Revenue[]) => {
-  const yAxisLabels = [];
-  const highestRecord = Math.max(...revenue.map((month) => month.revenue));
-  const topLabel = Math.ceil(highestRecord / 100) * 100;
-
-  for (let i = topLabel; i >= 0; i -= 100) {
-    yAxisLabels.push(`€${i}`);
-  }
-
-  return { yAxisLabels, topLabel };
-};
-
 export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
   // display all pages without any ellipsis.

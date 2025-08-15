@@ -1,8 +1,7 @@
 import { UpdateTravel, DeleteTravelConfirm, DeleteTravelTrigger } from '@/app/ui/travels/buttons';
 import { formatDateToLocal, formatCurrency, formatTime, formatDuration } from '@/app/lib/utils';
 import { fetchFilteredTravels } from '@/app/lib/data';
-import { Table, AlertDialog, Button, Flex, Tooltip, IconButton } from "@radix-ui/themes";
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { Table, AlertDialog, Button, Flex } from "@radix-ui/themes";
 
 export default async function InvoicesTable({
   query,
