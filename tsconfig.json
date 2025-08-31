@@ -31,6 +31,6 @@
     ".next/types/**/*.ts",
     "app/lib/placeholder-data.ts",
     "scripts/seed.js"
-  ],
+, "__tests__/lib_tests/utils_test.js"  ],
   "exclude": ["node_modules"]
 }
