@@ -55,12 +55,11 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
     let duration = 111;
     let roundedDuration = 222;
     let dailyAmount = preferences.daily_fee * 10;
-    let finalDestination = destination + ", " + zip;
 
     try {
       await sql`
-        INSERT INTO travels (user_id, destination, date, start_time, end_time, duration, rounded_duration, daily_amount)
-        VALUES (${preferences.user_id}, ${finalDestination}, ${date}, ${startTime}, ${endTime}, ${duration}, ${roundedDuration}, ${dailyAmount})
+        INSERT INTO travels (user_id, destination, date, start_time, end_time, duration, rounded_duration, daily_amount, zip)
+        VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTime}, ${endTime}, ${duration}, ${roundedDuration}, ${dailyAmount}, ${zip})
       `;
     } catch (error) {
       console.error(error);
@@ -71,13 +70,22 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
   redirect('/dashboard/travels');
 }
 
-export async function editTravel(id: string, preferences: PreferencesTable, formData: FormData) {
-  const { destination, date, startTime, endTime } = CreateTravel.parse({
+export async function editTravel(id: string, preferences: PreferencesTable, prevState: State, formData: FormData) {
+  const validatedFields = CreateTravel.safeParse({
     destination: formData.get('destination'),
+    zip: formData.get('zip'),
     date: formData.get('date'),
     startTime: formData.get('startTime'),
     endTime: formData.get('endTime'),
   });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Parse Travel.',
+    };
+  }
+  const { destination, zip, date, startTime, endTime } = validatedFields.data;
 
   let duration = 111;
   let roundedDuration = 222;
@@ -86,11 +94,13 @@ export async function editTravel(id: string, preferences: PreferencesTable, form
   try {
     await sql`
       UPDATE travels
-      SET user_id = ${preferences.user_id}, destination = ${destination}, date = ${date}, start_time = ${startTime}, end_time = ${endTime}, duration = ${duration}, rounded_duration = ${roundedDuration}, daily_amount = ${dailyAmount}
+      SET user_id = ${preferences.user_id}, destination = ${destination}, date = ${date}, start_time = ${startTime},
+      end_time = ${endTime}, duration = ${duration}, rounded_duration = ${roundedDuration}, daily_amount = ${dailyAmount},
+      zip = ${zip}
       WHERE id = ${id}
     `;
   } catch (error) {
-
+    console.error(error);
   }
 
   revalidatePath('/dashboard/travels');
