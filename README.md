@@ -1,5 +1,10 @@
-## Next.js App Router Course - Starter
+## Anlage Pro
 
-This is the starter template for the Next.js App Router Course. It contains the starting code for the dashboard application.
+# Test
+The project uses Jest as test framework with coverage measurement.
 
-For more information, see the [course curriculum](https://nextjs.org/learn) on the Next.js Website.
+To run all automated test use the following command:
+
+```
+pnpm test
+```
