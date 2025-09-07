@@ -2,20 +2,18 @@
 
 import { TravelsTable, PreferencesTable } from '@/app/lib/definitions';
 import {
-  CheckIcon,
-  ClockIcon,
+  EnvelopeIcon,
   CurrencyDollarIcon,
-  UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { editTravel } from '@/app/lib/actions';
 import { Button, Tooltip, TextField } from "@radix-ui/themes";
-import { InputMask } from '@react-input/mask';
-import CustomInput from '../timeInput'
 import React, { useState } from 'react';
 import { useActionState } from 'react';
 import { State, getGeocodeAddress, getDistanceAsKm, getAddressDetails } from '@/app/lib/actions';
 import { cutMeters } from '@/app/lib/utils';
+import TimeInputRadixWrapper from '@/app/ui/components/timeWrapper';
+
 
 export default function EditTravelForm({
   travel,
@@ -46,6 +44,7 @@ export default function EditTravelForm({
     setDistance(cutMeters(result.distance.toString()) + " km");
 
     setLocationPending(false);
+
   };
 
   return (
@@ -56,7 +55,7 @@ export default function EditTravelForm({
       </label>
       <TextField.Root id='date' type='date' name='date' defaultValue={new Date(Date.parse(travel.date)).toISOString().slice(0, 10)}>
 	      <TextField.Slot >
-		    <CurrencyDollarIcon height="16" width="16" />
+		      <CurrencyDollarIcon height="16" width="16" />
 	      </TextField.Slot>
       </TextField.Root>
 
@@ -73,7 +72,7 @@ export default function EditTravelForm({
         disabled={locationPending}
         >
 	      <TextField.Slot >
-		    <CurrencyDollarIcon height="16" width="16" />
+		      <CurrencyDollarIcon height="16" width="16" />
 	      </TextField.Slot>
       </TextField.Root>
         <label htmlFor="zip" className="mb-2 block text-sm font-medium">
@@ -90,7 +89,7 @@ export default function EditTravelForm({
           disabled={locationPending}
           >
           <TextField.Slot>
-            {/* <EnvelopeIcon height="16" width="16" /> */}
+            <EnvelopeIcon height="16" width="16" />
           </TextField.Slot>
         </TextField.Root>
         <div id="customer-error" aria-live="polite" aria-atomic="true">
@@ -102,17 +101,22 @@ export default function EditTravelForm({
             ))}
         </div>
 
-      <InputMask id="startTime" component={CustomInput} mask="__:__" replacement={{ _: /\d/ }} label="Select Start Time" defaultValue={travel.start_time}/>
-
-      <InputMask id="endTime" component={CustomInput} mask="__:__" replacement={{ _: /\d/ }} label="Select End Time" defaultValue={travel.end_time} />
+      <label htmlFor="startTime" className="mb-2 block text-sm font-medium">
+        Select Start Time
+      </label>
+      <TimeInputRadixWrapper defaultTime={travel.start_time} id="startTime"/>
+      <label htmlFor="endTime" className="mb-2 block text-sm font-medium">
+        Select End Time
+      </label>
+      <TimeInputRadixWrapper defaultTime={travel.end_time} id="endTime" />
 
       <div className="mt-6 flex justify-end gap-4">
       <Tooltip content="Back to Travels page">
-        <Button>
-          <Link href="/dashboard/travels">
-          Cancel
-          </Link>
-        </Button>
+        <Link href="/dashboard/travels">
+          <Button>
+            Cancel
+          </Button>
+        </Link>
       </Tooltip>
 
       <Tooltip content="Edit the data">
@@ -121,6 +125,7 @@ export default function EditTravelForm({
         </Button>
       </Tooltip>
       </div>
+
     </form>
   );
 }

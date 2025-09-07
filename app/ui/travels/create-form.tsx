@@ -5,11 +5,10 @@ import Link from 'next/link';
 import { EnvelopeIcon, MapPinIcon, CalendarIcon, ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/outline';
 import { Button, Tooltip, TextField, Flex } from "@radix-ui/themes";
 import { createTravel, State, getGeocodeAddress, getDistanceAsKm, getAddressDetails } from '@/app/lib/actions';
-import { InputMask } from '@react-input/mask';
-import CustomInput from '../timeInput'
 import { useActionState } from 'react';
 import React, { useState } from 'react';
 import { cutMeters } from '@/app/lib/utils';
+import TimeInputRadixWrapper from '@/app/ui/components/timeWrapper';
 
 export default function Form({ preferences }: { preferences: PreferencesTable[] }) {
   const initialState: State = { message: null, errors: {} };
@@ -116,7 +115,10 @@ export default function Form({ preferences }: { preferences: PreferencesTable[] 
           }
       </div>
 
-      <InputMask id="startTime" component={CustomInput} mask="__:__" replacement={{ _: /\d/ }} label="Select Start Time" />
+      <label htmlFor="startTime" className="mb-2 block text-sm font-medium">
+        Select Start Time
+      </label>
+      <TimeInputRadixWrapper id="startTime"/>
       <div id="customer-error" aria-live="polite" aria-atomic="true">
         {state.errors?.startTime &&
           state.errors.startTime.map((error: string) => (
@@ -126,7 +128,10 @@ export default function Form({ preferences }: { preferences: PreferencesTable[] 
           ))}
       </div>
 
-      <InputMask id="endTime" component={CustomInput} mask="__:__" replacement={{ _: /\d/ }} label="Select End Time" />
+      <label htmlFor="endTime" className="mb-2 block text-sm font-medium">
+        Select End Time
+      </label>
+      <TimeInputRadixWrapper id="endTime" />
       <div id="customer-error" aria-live="polite" aria-atomic="true">
         {state.errors?.endTime &&
           state.errors.endTime.map((error: string) => (

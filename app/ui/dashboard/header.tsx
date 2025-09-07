@@ -1,7 +1,7 @@
 'use client'
 
 import { Flex, Text } from "@radix-ui/themes";
-import ThemeSwitch from '../theme-switch';
+import ThemeSwitch from '../components/theme-switch';
 import { User } from "@/app/lib/definitions";
 
 export default function Header({ userName }: { userName: string|undefined }) {
