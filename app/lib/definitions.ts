@@ -27,6 +27,7 @@ export type TravelsTable = {
   duration: number;
   rounded_duration: number;
   daily_amount: number;
+  zip: string;
 };
 
 export type Revenue = {

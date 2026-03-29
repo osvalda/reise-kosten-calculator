@@ -39,19 +39,20 @@ export async function fetchFilteredTravels(
   try {
     const travels = await sql<TravelsTable[]>`
       SELECT
-        *
+        id, user_id, date, destination, start_time, end_time, duration, rounded_duration, daily_amount, zip
       FROM travels
       WHERE
         travels.destination ILIKE ${`%${query}%`} OR
         CAST(travels.date AS VARCHAR) ILIKE ${`%${query}%`} OR
-        CAST(travels.duration AS VARCHAR) ILIKE ${`%${query}%`}
+        CAST(travels.duration AS VARCHAR) ILIKE ${`%${query}%`} OR
+        CAST(travels.zip AS VARCHAR) ILIKE ${`%${query}%`}
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
     return travels;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch travels.');
+    throw new Error('Failed to fetch filtered travels.');
   }
 }
 
@@ -78,7 +79,7 @@ export async function fetchTravelById(id: string) {
   try {
     const data = await sql<TravelsTable[]>`
       SELECT
-        *
+        id, user_id, date, destination, start_time, end_time, duration, rounded_duration, daily_amount, zip
       FROM travels WHERE travels.id = ${id};
     `;
 

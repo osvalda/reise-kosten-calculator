@@ -1,4 +1,4 @@
-import AnlageProLogo from '@/app/ui/anlage-pro-logo';
+import AnlageProLogo from '@/app/ui/components/anlage-pro-logo';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button, Text, Flex} from "@radix-ui/themes";

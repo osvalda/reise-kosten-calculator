@@ -3,7 +3,7 @@ import { formatDateToLocal, formatCurrency, formatTime, formatDuration } from '@
 import { fetchFilteredTravels } from '@/app/lib/data';
 import { Table, AlertDialog, Button, Flex } from "@radix-ui/themes";
 
-export default async function InvoicesTable({
+export default async function TravelsTable({
   query,
   currentPage,
 }: {
@@ -19,6 +19,7 @@ export default async function InvoicesTable({
             <Table.Row>
               <Table.ColumnHeaderCell>Date</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Destination</Table.ColumnHeaderCell>
+              <Table.ColumnHeaderCell>ZIP</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>Start Time</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>End Time</Table.ColumnHeaderCell>
               <Table.ColumnHeaderCell>IST (h)</Table.ColumnHeaderCell>
@@ -34,6 +35,7 @@ export default async function InvoicesTable({
               >
                 <Table.Cell>{formatDateToLocal(travel.date)}</Table.Cell>
                 <Table.Cell>{travel.destination}</Table.Cell>
+                <Table.Cell>{travel.zip}</Table.Cell>
                 <Table.Cell>{formatTime(travel.start_time)}</Table.Cell>
                 <Table.Cell>{formatTime(travel.end_time)}</Table.Cell>
                 <Table.Cell>{formatDuration(travel.duration)}</Table.Cell>
