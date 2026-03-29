@@ -4,6 +4,12 @@ import "@radix-ui/themes/styles.css";
 import { Theme, ThemePanel } from "@radix-ui/themes";
 import { ThemeProvider } from "next-themes";
 import { Metadata } from 'next';
+import { Roboto, Noto_Sans } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const notoSansHeading = Noto_Sans({subsets:['latin'],variable:'--font-heading'});
+
+const roboto = Roboto({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: {
@@ -20,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", roboto.variable, notoSansHeading.variable)}>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider attribute="class">
           <Theme accentColor="plum" radius="small">
