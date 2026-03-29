@@ -1,34 +1,32 @@
-import '@/app/ui/global.css';
-import { inter } from '@/app/ui/fonts';
-import "@radix-ui/themes/styles.css";
-import { Theme, ThemePanel } from "@radix-ui/themes";
-import { ThemeProvider } from "next-themes";
-import { Metadata } from 'next';
+import { Geist, Geist_Mono, Roboto, Noto_Sans } from "next/font/google"
 
-export const metadata: Metadata = {
-  title: {
-    template: '%s | AnlagePro',
-    default: 'AnlagePro',
-  },
-  description: 'Travel cost collector and calculator app',
-  metadataBase: new URL('https://anlage.pro/'),
-};
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import { cn } from "@/lib/utils";
+
+const notoSansHeading = Noto_Sans({subsets:['latin'],variable:'--font-heading'});
+
+const roboto = Roboto({subsets:['latin'],variable:'--font-sans'})
+
+const fontMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+})
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} antialiased`}>
-        <ThemeProvider attribute="class">
-          <Theme accentColor="plum" radius="small">
-            {children}
-            {/* <ThemePanel /> */}
-          </Theme>
-        </ThemeProvider>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn("antialiased", fontMono.variable, "font-sans", roboto.variable, notoSansHeading.variable)}
+    >
+      <body>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
-  );
+  )
 }
