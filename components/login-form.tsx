@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input"
 import { useActionState } from 'react';
 import { authenticate } from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
+import { PasswordInput } from "@/components/ui/password-input";
 
 export function LoginForm({
   className,
@@ -54,9 +55,8 @@ export function LoginForm({
               Forgot your password?
             </a>
           </div>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             name="password"
             required
             className="bg-background"

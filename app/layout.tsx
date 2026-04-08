@@ -3,6 +3,7 @@ import { Geist_Mono, Roboto, Noto_Sans } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
+import { Metadata } from 'next';
 
 const notoSansHeading = Noto_Sans({ subsets: ['latin'], variable: '--font-heading' });
 
@@ -12,6 +13,15 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  title: {
+    template: 'AnlagePro | %s',
+    default: 'AnlagePro',
+  },
+  description: 'Travel cost collector and calculator app',
+  metadataBase: new URL('https://anlage.pro/'),
+};
 
 export default function RootLayout({
   children,

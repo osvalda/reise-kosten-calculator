@@ -20,17 +20,17 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Logout } from "@/components/log-out"
 import { RiArrowUpDownLine, RiSparklingLine, RiCheckboxCircleLine, RiBankCardLine, RiNotificationLine, RiLogoutBoxLine } from "@remixicon/react"
 
 export function NavUser({
-  user,
+  user, children
 }: {
   user: {
     name: string
     email: string
     avatar: string
-  }
+  },
+  children: React.ReactNode
 }) {
   const { isMobile } = useSidebar()
 
@@ -101,7 +101,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <RiLogoutBoxLine />
-              {/* <Logout /> */}
+              {children}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

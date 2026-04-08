@@ -3,9 +3,8 @@
 import * as React from "react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { AnlageProHeader } from "@/components/anlage-header"
 import {
   Sidebar,
   SidebarContent,
@@ -13,112 +12,38 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { RiGalleryLine, RiPulseLine, RiCommandLine, RiTerminalBoxLine, RiRobotLine, RiBookOpenLine, RiSettingsLine, RiCropLine, RiPieChartLine, RiMapLine } from "@remixicon/react"
+import { RiDashboard3Line, RiPlaneLine, RiMapPin2Line, RiSettingsLine } from "@remixicon/react"
 
-// This is sample data.
 const data = {
   user: {
     name: "Elettartam",
     email: "elettartam@gmail.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
-    {
-      name: "AnlagePro",
-      logo: (
-        <RiGalleryLine
-        />
-      ),
-      plan: "Free Tier",
-    },
-    {
-      name: "Anlage Corp.",
-      logo: (
-        <RiPulseLine
-        />
-      ),
-      plan: "Startup",
-    },
-    {
-      name: "Second",
-      logo: (
-        <RiCommandLine
-        />
-      ),
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: (
-        <RiTerminalBoxLine
+        <RiDashboard3Line
         />
       ),
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
     },
     {
       title: "Travels",
-      url: "#",
+      url: "/dashboard/travels",
       icon: (
-        <RiRobotLine
+        <RiPlaneLine
         />
       ),
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
     },
     {
       title: "Locations",
-      url: "#",
+      url: "/dashboard/locations",
       icon: (
-        <RiBookOpenLine
+        <RiMapPin2Line
         />
       ),
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
     },
     {
       title: "Settings",
@@ -130,63 +55,33 @@ const data = {
       items: [
         {
           title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
+          url: "/dashboard/settings/general",
         },
         {
           title: "Billing",
-          url: "#",
+          url: "settings/billing",
         },
         {
           title: "Limits",
-          url: "#",
+          url: "/dashboard/settings/limits",
         },
       ],
     },
   ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: (
-        <RiCropLine
-        />
-      ),
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: (
-        <RiPieChartLine
-        />
-      ),
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: (
-        <RiMapLine
-        />
-      ),
-    },
-  ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ children, ...props }: { children: React.ReactNode } & React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <AnlageProHeader />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {children}
+        <NavUser user={data.user} >{children}</NavUser>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
