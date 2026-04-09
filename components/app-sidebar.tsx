@@ -70,7 +70,7 @@ const data = {
   ],
 }
 
-export function AppSidebar({ children, ...props }: { children: React.ReactNode } & React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -80,8 +80,7 @@ export function AppSidebar({ children, ...props }: { children: React.ReactNode }
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        {children}
-        <NavUser user={data.user} >{children}</NavUser>
+        <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

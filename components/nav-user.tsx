@@ -4,7 +4,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
+} from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,24 +13,24 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
-import { RiArrowUpDownLine, RiSparklingLine, RiCheckboxCircleLine, RiBankCardLine, RiNotificationLine, RiLogoutBoxLine } from "@remixicon/react"
+} from "@/components/ui/sidebar";
+import { RiArrowUpDownLine, RiSparklingLine, RiCheckboxCircleLine, RiBankCardLine, RiNotificationLine, RiLogoutBoxLine } from "@remixicon/react";
+import { signOut } from '@/auth';
 
 export function NavUser({
-  user, children
+  user
 }: {
   user: {
     name: string
     email: string
     avatar: string
-  },
-  children: React.ReactNode
+  }
 }) {
   const { isMobile } = useSidebar()
 
@@ -99,9 +99,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onSelect={(e) => { signOut({ redirectTo: '/' }); }}>
               <RiLogoutBoxLine />
-              {children}
+              Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
