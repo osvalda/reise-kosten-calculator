@@ -2,9 +2,9 @@
 
 import * as React from "react"
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
-import { AnlageProHeader } from "@/components/anlage-header"
+import { NavMain } from "@/components/sidepanel/nav-main"
+import { NavUser } from "@/components/sidepanel/nav-user"
+import { AnlageProHeader } from "@/components/sidepanel/anlage-header"
 import {
   Sidebar,
   SidebarContent,

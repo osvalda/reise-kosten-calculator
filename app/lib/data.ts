@@ -18,7 +18,7 @@ export async function fetchRevenue() {
   }
 }
 
-export async function fetchUserPreferences(userId : string) {
+export async function fetchUserPreferences(userId: string) {
   try {
     const data = await sql<PreferencesTable[]>`SELECT * FROM preferences where user_id = ${`${userId}`} LIMIT 1;`;
 
@@ -53,6 +53,26 @@ export async function fetchFilteredTravels(
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch filtered travels.');
+  }
+}
+
+export async function fetchTravelsOfUser(
+  userId: string,
+) {
+  try {
+    const travels = await sql<TravelsTable[]>`
+      SELECT
+        id, user_id, date, destination, start_time, end_time, duration, rounded_duration, zip
+      FROM travels
+      WHERE
+        travels.user_id = ${`${userId}`}
+      ORDER BY date DESC
+    `;
+
+    return travels;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch travels of user.');
   }
 }
 
@@ -96,37 +116,24 @@ export async function fetchTravelById(id: string) {
   }
 }
 
-/************************************ */
-
+/******* Dashboard Card Data Fetching Function *********/
 
 export async function fetchCardData() {
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql `SELECT COUNT(*) FROM travels`;
-    // const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    // const invoiceStatusPromise = sql`SELECT
-    //      SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-    //      SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-    //      FROM invoices`;
+    const invoiceCountPromise = sql`SELECT COUNT(*) FROM travels`;
+    const roundedDurationPromise = sql`SELECT SUM(rounded_duration) FROM travels;`;
 
     const data = await Promise.all([
       invoiceCountPromise,
-      // customerCountPromise,
-      // invoiceStatusPromise,
+      roundedDurationPromise,
     ]);
 
     const numberOfTravels = Number(data[0][0].count ?? '0');
-    // const numberOfCustomers = Number(data[1][0].count ?? '0');
-    // const totalPaidInvoices = formatCurrency(data[2][0].paid ?? '0');
-    // const totalPendingInvoices = formatCurrency(data[2][0].pending ?? '0');
+    const roundedDuration = Number(data[1][0].sum ?? '0');
 
     return {
-      // numberOfCustomers,
       numberOfTravels,
-      // totalPaidInvoices,
-      // totalPendingInvoices,
+      roundedDuration,
     };
   } catch (error) {
     console.error('Database Error:', error);

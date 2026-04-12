@@ -26,7 +26,7 @@ export type TravelsTable = {
   end_time: string;
   duration: number;
   rounded_duration: number;
-  daily_amount: number;
+  // daily_amount: number;
   zip: string;
 };
 
