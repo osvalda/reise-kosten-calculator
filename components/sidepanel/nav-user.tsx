@@ -21,17 +21,10 @@ import {
 } from "@/components/ui/sidebar";
 import { RiArrowUpDownLine, RiSparklingLine, RiCheckboxCircleLine, RiLogoutBoxLine } from "@remixicon/react";
 import { signOut } from '@/auth';
+import { User } from "@/app/lib/definitions";
 
-export function NavUser({
-  user
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
-  const { isMobile } = useSidebar()
+export function NavUser({user}: { user: User }) {
+  const { isMobile } = useSidebar();
 
   return (
     <SidebarMenu>
@@ -43,8 +36,8 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">ET</AvatarFallback>
+                <AvatarImage src={user.image_url} alt={user.name} />
+                <AvatarFallback className="rounded-lg">AO</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -75,7 +68,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={(e) => { signOut({ redirectTo: '/' }); }}>
+            <DropdownMenuItem onSelect={() => { signOut({ redirectTo: '/' }); }}>
               <RiLogoutBoxLine />
               Sign Out
             </DropdownMenuItem>

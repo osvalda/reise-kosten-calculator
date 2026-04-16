@@ -13,13 +13,10 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { RiDashboard3Line, RiPlaneLine, RiMapPin2Line, RiSettingsLine } from "@remixicon/react"
+import { usePreferences } from "@/app/lib/userPrefferenceProvider"
+import { UserData } from "@/app/lib/definitions"
 
 const data = {
-  user: {
-    name: "Elettartam",
-    email: "elettartam@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -71,6 +68,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const userData: UserData = usePreferences();
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -80,7 +79,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

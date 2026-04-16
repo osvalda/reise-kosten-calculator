@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Test from '@/components/location/test';
 
 export const metadata: Metadata = {
   title: 'Locations',
@@ -6,5 +7,8 @@ export const metadata: Metadata = {
 
 
 export default function Page() {
-  return <p>Locations Page</p>;
+  return <section>
+    <p>Locations Page</p>
+    <Test />
+  </section>;
 }

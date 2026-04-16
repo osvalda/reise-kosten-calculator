@@ -1,9 +1,5 @@
 import { Metadata } from 'next';
-import StatisticsCard from '@/components/dashboard/statistics-card';
 import {
-  CalendarX2Icon,
-  TriangleAlertIcon,
-  TruckIcon
 } from 'lucide-react'
 import CardWrapper from '@/components/dashboard/statistic-cards-wrapper';
 import { ChartAreaInteractive } from '@/components/dashboard/chart-wrapper';

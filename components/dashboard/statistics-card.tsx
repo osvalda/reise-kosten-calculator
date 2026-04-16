@@ -1,10 +1,10 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from 'react';
 import { Card, CardHeader, CardDescription, CardTitle, CardAction, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
     TrendingUpIcon,
     TrendingDownIcon
-} from 'lucide-react'
+} from 'lucide-react';
 
 type StatisticsCardProps = {
     icon: ReactNode
@@ -43,4 +43,4 @@ const StatisticsCard = ({ icon, value, title, changePercentage, isUpwardTrend, f
     )
 }
 
-export default StatisticsCard
+export default StatisticsCard;

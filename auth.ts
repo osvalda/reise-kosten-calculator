@@ -11,7 +11,7 @@ import postgres from 'postgres';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
-export async function getUser(email: string): Promise<User | undefined> {
+export async function getUser(email: string): Promise<User> {
   try {
     const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
     return user[0];

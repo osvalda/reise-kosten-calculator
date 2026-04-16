@@ -18,11 +18,11 @@ export async function fetchRevenue() {
   }
 }
 
-export async function fetchUserPreferences(userId: string) {
+export async function fetchUserPreferences(userId: string): Promise<PreferencesTable> {
   try {
     const data = await sql<PreferencesTable[]>`SELECT * FROM preferences where user_id = ${`${userId}`} LIMIT 1;`;
 
-    return data;
+    return data[0];
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch user preferences data.');

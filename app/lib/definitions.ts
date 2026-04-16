@@ -17,6 +17,11 @@ export type PreferencesTable = {
   language: 'deutsch' | 'english' | 'magyar';
 };
 
+export type UserData = {
+  user: User;
+  preferences: PreferencesTable;
+};
+
 export type TravelsTable = {
   id: string;
   user_id: string;
@@ -26,7 +31,6 @@ export type TravelsTable = {
   end_time: string;
   duration: number;
   rounded_duration: number;
-  // daily_amount: number;
   zip: string;
 };
 

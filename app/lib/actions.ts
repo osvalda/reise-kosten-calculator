@@ -138,7 +138,7 @@ export async function authenticate(
   }
 }
 
-export async function fetchActiveUserData(): Promise<User | undefined> {
+export async function fetchActiveUserData(): Promise<User> {
   try {
     const email = await getEmailFromAuth();
     if (!email) throw new Error("Wrong email!");
