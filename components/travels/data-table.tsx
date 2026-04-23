@@ -82,6 +82,15 @@ import {
 } from "@/components/ui/table"
 import { TravelsTable } from "@/app/lib/definitions"
 import { formatDateToLocal, formatCurrency, formatTime, formatDuration } from '@/app/lib/utils';
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+    DialogClose
+} from '@/components/ui/dialog'
 
 const columns: ColumnDef<TravelsTable>[] = [
     {
@@ -284,7 +293,7 @@ export function DataTable({
                 <div className="flex items-center gap-2 pb-4">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="secondary" size="sm">
+                            <Button variant="secondary">
                                 <IconLayoutColumns />
                                 <span className="hidden lg:inline">Customize Columns</span>
                                 <span className="lg:hidden">Columns</span>
@@ -315,10 +324,30 @@ export function DataTable({
                                 })}
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <Button variant="default" size="sm">
-                        <IconPlus />
-                        <span className="hidden lg:inline">Add Travel</span>
-                    </Button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="default">
+                                <IconPlus />
+                                <span className="hidden lg:inline">Add Travel</span>
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className='sm:max-w-md'>
+                            <DialogHeader className='space-y-2'>
+                                <DialogTitle>Add Travel Record</DialogTitle>
+                                <div className='text-muted-foreground text-sm'>
+                                    Here comes the travel record form...
+                                </div>
+                            </DialogHeader>
+                            <DialogFooter className='mt-4 gap-4 sm:justify-end'>
+                                <DialogClose asChild>
+                                    <Button variant='outline'>Cancel</Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                    <Button variant='default'>Add</Button>
+                                </DialogClose>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
             {/* Table body */}

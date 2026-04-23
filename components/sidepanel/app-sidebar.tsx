@@ -51,16 +51,20 @@ const data = {
       ),
       items: [
         {
-          title: "General",
-          url: "/dashboard/settings/general",
+          title: "Personal Preferences",
+          url: "/dashboard/settings/personal",
         },
         {
-          title: "Billing",
-          url: "settings/billing",
+          title: "Security Preferences",
+          url: "/dashboard/settings/security",
         },
         {
-          title: "Limits",
-          url: "/dashboard/settings/limits",
+          title: "Apperance",
+          url: "/dashboard/settings/apperance",
+        },
+        {
+          title: "Travel Preferences",
+          url: "/dashboard/settings/travel",
         },
       ],
     },
