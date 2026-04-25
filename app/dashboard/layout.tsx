@@ -10,6 +10,7 @@ import { PreferencesProvider } from "@/app/lib/userPrefferenceProvider";
 import { fetchActiveUserData } from "@/app/lib/actions";
 import { fetchUserPreferences } from "@/app/lib/data"
 import { PreferencesTable, User } from "../lib/definitions";
+import { Toaster } from "@/components/ui/sonner"
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
 
@@ -38,6 +39,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
                 {children}
               </section>
             </SidebarInset>
+            <Toaster />
           </PreferencesProvider>
         </TooltipProvider>
       </SidebarProvider>

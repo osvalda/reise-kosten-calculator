@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@osvalda/smart-time-input": "^1.0.4",
     "@remixicon/react": "^4.9.0",
     "@tabler/icons-react": "^3.41.1",
     "@tanstack/react-table": "^8.21.3",

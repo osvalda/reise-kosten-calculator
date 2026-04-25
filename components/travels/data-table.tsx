@@ -8,8 +8,6 @@ import {
     IconChevronsLeft,
     IconChevronsRight,
     IconLayoutColumns,
-    IconPlus,
-    IconTrendingUp,
     IconTrash,
     IconPencil,
     IconCurrentLocation
@@ -70,7 +68,6 @@ import {
 import { Separator } from "@/components/ui/separator"
 import {
     ButtonGroup,
-    ButtonGroupSeparator,
 } from "@/components/ui/button-group"
 import {
     Table,
@@ -82,15 +79,9 @@ import {
 } from "@/components/ui/table"
 import { TravelsTable } from "@/app/lib/definitions"
 import { formatDateToLocal, formatCurrency, formatTime, formatDuration } from '@/app/lib/utils';
-import {
-    Dialog,
-    DialogTrigger,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-    DialogClose
-} from '@/components/ui/dialog'
+import { AddModal } from "./add-modal"
+import { usePreferences } from "@/app/lib/userPrefferenceProvider"
+import { UserData } from "@/app/lib/definitions"
 
 const columns: ColumnDef<TravelsTable>[] = [
     {
@@ -145,7 +136,7 @@ const columns: ColumnDef<TravelsTable>[] = [
     },
     {
         accessorKey: "start time",
-        header: "Start Time",
+        header: "Start time",
         cell: ({ row }) => (
             <form
                 onSubmit={(e) => {
@@ -170,7 +161,7 @@ const columns: ColumnDef<TravelsTable>[] = [
     },
     {
         accessorKey: "end time",
-        header: "End Time",
+        header: "End time",
         cell: ({ row }) => (
             <form
                 onSubmit={(e) => {
@@ -248,13 +239,10 @@ export function DataTable({
 }: {
     data: TravelsTable[]
 }) {
-    const [data, setData] = React.useState(() => initialData)
+    const preferences: UserData = usePreferences();
     const [rowSelection, setRowSelection] = React.useState({})
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({})
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    )
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
@@ -262,7 +250,7 @@ export function DataTable({
     })
 
     const table = useReactTable({
-        data,
+        data: initialData,
         columns,
         state: {
             sorting,
@@ -324,30 +312,7 @@ export function DataTable({
                                 })}
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button variant="default">
-                                <IconPlus />
-                                <span className="hidden lg:inline">Add Travel</span>
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className='sm:max-w-md'>
-                            <DialogHeader className='space-y-2'>
-                                <DialogTitle>Add Travel Record</DialogTitle>
-                                <div className='text-muted-foreground text-sm'>
-                                    Here comes the travel record form...
-                                </div>
-                            </DialogHeader>
-                            <DialogFooter className='mt-4 gap-4 sm:justify-end'>
-                                <DialogClose asChild>
-                                    <Button variant='outline'>Cancel</Button>
-                                </DialogClose>
-                                <DialogClose asChild>
-                                    <Button variant='default'>Add</Button>
-                                </DialogClose>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                    <AddModal preferences={preferences.preferences} />
                 </div>
             </div>
             {/* Table body */}

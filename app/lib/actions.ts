@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import postgres from 'postgres';
-import { PreferencesTable, User, Addresses } from '@/app/lib/definitions';
+import { PreferencesTable, User, Addresses, FormResponse } from '@/app/lib/definitions';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn, auth, getUser } from '@/auth';
@@ -35,7 +35,25 @@ export type State = {
   message?: string | null;
 };
 
+export type FormSchemaType = z.infer<typeof FormSchema>;
+export type FormResponse = {
+  status: 'success' | 'error';
+  keepOpen: boolean;
+  errors?: {
+    venue?: string[];
+    location?: string[];
+    date?: string[];
+    facebook_link?: string[];
+    ticket_link?: string[];
+    status?: string[];
+  };
+  message?: string;
+  data?: FormSchemaType;
+};
+
 export async function createTravel(preferences: PreferencesTable, prevState: State, formData: FormData) {
+  const response: FormResponse = { status: 'success', keepOpen: false, message: 'Tour date created successfully.' };
+  const data = Object.fromEntries(formData);
   const validatedFields = CreateTravel.safeParse({
     destination: formData.get('destination'),
     zip: formData.get('zip'),
@@ -45,11 +63,14 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
   });
 
   if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Travel.',
-    };
+    response.status = 'error';
+    response.errors = validatedFields.error.flatten().fieldErrors;
+    response.keepOpen = true;
+    response.message = 'Missing Fields. Failed to Create Travel.';
+    response.data = data as unknown as FormSchemaType;
+    return response;
   }
+
   const { destination, zip, date, startTime, endTime } = validatedFields.data;
 
   const duration = 111;
@@ -62,12 +83,17 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
         VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTime}, ${endTime}, ${duration}, ${roundedDuration}, ${dailyAmount}, ${zip})
       `;
   } catch (error) {
-    console.error(error);
+    console.error('Create Error:', error);
+    response.status = 'error';
+    response.keepOpen = true;
+    response.message = 'Failed to create travel record.';
+    response.data = formData as unknown as FormSchemaType;
+    return response;
   }
 
   revalidatePath('/dashboard/travels');
   revalidatePath('/dashboard');
-  redirect('/dashboard/travels');
+  return response;
 }
 
 export async function editTravel(id: string, preferences: PreferencesTable, prevState: State, formData: FormData) {
