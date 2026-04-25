@@ -82,6 +82,16 @@ import { formatDateToLocal, formatCurrency, formatTime, formatDuration } from '@
 import { AddModal } from "./add-modal"
 import { usePreferences } from "@/app/lib/userPrefferenceProvider"
 import { UserData } from "@/app/lib/definitions"
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+    DialogClose
+} from '@/components/ui/dialog';
+import { deleteTravel } from "@/app/lib/actions";
 
 const columns: ColumnDef<TravelsTable>[] = [
     {
@@ -137,51 +147,13 @@ const columns: ColumnDef<TravelsTable>[] = [
     {
         accessorKey: "start time",
         header: "Start time",
-        cell: ({ row }) => (
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault()
-                    toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-                        loading: `Saving ${row.original.start_time}`,
-                        success: "Done",
-                        error: "Error",
-                    })
-                }}
-            >
-                <Label htmlFor={`${row.original.id}-target`} className="sr-only">
-                    Target
-                </Label>
-                <Input
-                    className="h-8 w-16 border-transparent bg-transparent text-right shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background dark:bg-transparent dark:hover:bg-input/30 dark:focus-visible:bg-input/30"
-                    defaultValue={row.original.start_time}
-                    id={`${row.original.id}-target`}
-                />
-            </form>
-        ),
+        cell: ({ row }) => { return row.original.start_time },
     },
     {
         accessorKey: "end time",
         header: "End time",
         cell: ({ row }) => (
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault()
-                    toast.promise(new Promise((resolve) => setTimeout(resolve, 1000)), {
-                        loading: `Saving ${row.original.end_time}`,
-                        success: "Done",
-                        error: "Error",
-                    })
-                }}
-            >
-                <Label htmlFor={`${row.original.id}-limit`} className="sr-only">
-                    Limit
-                </Label>
-                <Input
-                    className="h-8 w-16 border-transparent bg-transparent text-right shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background dark:bg-transparent dark:hover:bg-input/30 dark:focus-visible:bg-input/30"
-                    defaultValue={row.original.end_time}
-                    id={`${row.original.id}-limit`}
-                />
-            </form>
+            <div>{row.original.end_time}</div>
         ),
     },
     {
@@ -211,9 +183,29 @@ const columns: ColumnDef<TravelsTable>[] = [
         cell: ({ row }) => (
             <ButtonGroup>
                 <SheetOpen item={row.original} />
-                <Button variant="destructive" >
-                    <IconTrash />
-                </Button>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant="destructive" >
+                            <IconTrash />
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className='sm:max-w-md'>
+                        <DialogHeader className='space-y-2'>
+                            <DialogTitle>Delete travel record</DialogTitle>
+                            <div className='text-muted-foreground text-sm'>
+                                Delete this travel record permanently. This action cannot be undone.
+                            </div>
+                        </DialogHeader>
+                        <DialogFooter className='mt-4 gap-4 sm:justify-end'>
+                            <DialogClose asChild>
+                                <Button variant='outline'>Cancel</Button>
+                            </DialogClose>
+                            <form action={() => deleteTravel(row.original.id)}>
+                                <Button variant='destructive' type="submit">Delete</Button>
+                            </form>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </ButtonGroup>
         ),
     },
@@ -223,7 +215,6 @@ function NormalTableRow({ row }: { row: Row<TravelsTable> }) {
     return (
         <TableRow
             data-state={row.getIsSelected() && "selected"}
-            className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
         >
             {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>

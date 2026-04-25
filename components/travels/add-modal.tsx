@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from "@/components/ui/button";
 import { IconPlus } from "@tabler/icons-react";
-import { createTravel, State, getGeocodeAddress, getDistanceAsKm, getAddressDetails, FormResponse } from '@/app/lib/actions';
+import { createTravel, State, FormResponse } from '@/app/lib/actions';
 import { useActionState, useTransition } from 'react';
 import { PreferencesTable } from '@/app/lib/definitions';
 import { Input } from '@/components/ui/input';
@@ -74,7 +74,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
 
                 <div className='w-full space-y-3'>
                     <Label htmlFor="date">Date of travel</Label>
-                    <Input id="date" type='date' name='date' aria-invalid={!!response?.errors?.date} defaultValue={response?.data?.date} />
+                    <Input id="date" type='date' name='date' aria-invalid={!!response?.errors?.date} defaultValue={response?.data?.date?.toString()} />
                     <div id="date-error" aria-live="polite" aria-atomic="true">
                         {response?.errors?.date &&
                             response.errors.date.map((error: string) => (
@@ -110,7 +110,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <div className='flex flex-row gap-4'>
                     <div className='w-full space-y-3'>
                         <Label htmlFor="startTime">Start time of travel</Label>
-                        <SmartTimeInput id="startTime" name='startTime' aria-invalid={!!response?.errors?.startTime} defaultValue={response?.data?.startTime} className="h-7 w-full min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-xs/relaxed file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 md:text-xs/relaxed dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40" />
+                        <SmartTimeInput id="startTime" name='startTime' aria-invalid={!!response?.errors?.startTime} initTime={response?.data?.startTime} className="h-7 w-full min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-xs/relaxed file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 md:text-xs/relaxed dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40" />
                         <div id="startTime-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.startTime &&
                                 response.errors.startTime.map((error: string) => (
@@ -139,7 +139,6 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
 
                 <DialogFooter className='mt-4 gap-4 sm:justify-end'>
                     <DialogClose asChild>
-                        {/* TODO: reset form state on close */}
                         <Button variant='outline'>Cancel</Button>
                     </DialogClose>
                     <Button type='submit' disabled={isPending} variant='default'>{isPending ? "Adding..." : "Add"}</Button>
