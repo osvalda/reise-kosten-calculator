@@ -33,7 +33,7 @@ export function NavUser({user}: { user: User }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.image_url} alt={user.name} />
@@ -53,22 +53,20 @@ export function NavUser({user}: { user: User }) {
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <RiCheckboxCircleLine
-                />
+              <DropdownMenuItem className="cursor-pointer">
+                <RiCheckboxCircleLine/>
                 Account
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <RiSparklingLine
-                />
+              <DropdownMenuItem className="cursor-pointer">
+                <RiSparklingLine/>
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => { signOut({ redirectTo: '/' }); }}>
+            <DropdownMenuItem className="cursor-pointer" onSelect={() => { signOut({ redirectTo: '/' }); }}>
               <RiLogoutBoxLine />
               Sign Out
             </DropdownMenuItem>

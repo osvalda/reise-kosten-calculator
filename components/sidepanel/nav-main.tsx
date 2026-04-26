@@ -46,7 +46,7 @@ export function NavMain({
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
+                  <SidebarMenuButton tooltip={item.title} className="cursor-pointer">
                     {item.icon}
                     <span>{item.title}</span>
                     <RiArrowRightSLine className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -69,7 +69,7 @@ export function NavMain({
             </Collapsible>
             : <SidebarMenuItem key={item.title}>
               <Link key={item.title} href={item.url}>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton tooltip={item.title} className="cursor-pointer">
                   {item.icon}
                   <span>{item.title}</span>
                 </SidebarMenuButton>
