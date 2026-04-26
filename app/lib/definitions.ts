@@ -25,7 +25,7 @@ export type UserData = {
 export type TravelsTable = {
   id: string;
   user_id: string;
-  date: string;
+  date: Date;
   destination: string;
   start_time: string;
   end_time: string;
@@ -40,12 +40,3 @@ export type Revenue = {
   month_order: number;
   year: number;
 };
-
-export type Addresses = {
-  lat1: string;
-  lon1: string;
-  lat2: string;
-  lon2: string;
-};
-
-

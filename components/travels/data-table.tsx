@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import * as React from "react";
 import {
     IconChevronDown,
     IconChevronLeft,
@@ -11,7 +11,7 @@ import {
     IconTrash,
     IconPencil,
     IconCurrentLocation
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 import {
     flexRender,
     getCoreRowModel,
@@ -26,19 +26,17 @@ import {
     type Row,
     type SortingState,
     type VisibilityState,
-} from "@tanstack/react-table"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-import { toast } from "sonner"
-
-import { useIsMobile } from "@/hooks/use-mobile"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+} from "@tanstack/react-table";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
     type ChartConfig,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 import { Checkbox } from "@/components/ui/checkbox"
 import {
     SheetTrigger,
@@ -47,28 +45,27 @@ import {
     SheetHeader,
     SheetTitle,
     SheetDescription,
-    SheetFooter,
-    SheetClose
-} from "../ui/sheet"
+    SheetFooter
+} from "../ui/sheet";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import {
     ButtonGroup,
-} from "@/components/ui/button-group"
+} from "@/components/ui/button-group";
 import {
     Table,
     TableBody,
@@ -76,12 +73,12 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-import { TravelsTable } from "@/app/lib/definitions"
-import { formatDateToLocal, formatCurrency, formatTime, formatDuration } from '@/app/lib/utils';
-import { AddModal } from "./add-modal"
-import { usePreferences } from "@/app/lib/userPrefferenceProvider"
-import { UserData } from "@/app/lib/definitions"
+} from "@/components/ui/table";
+import { TravelsTable } from "@/app/lib/definitions";
+import { formatDateToLocal, formatCurrency, formatDuration } from '@/app/lib/utils';
+import { AddModal } from "./add-modal";
+import { usePreferences } from "@/app/lib/userPrefferenceProvider";
+import { UserData } from "@/app/lib/definitions";
 import {
     Dialog,
     DialogTrigger,
@@ -92,6 +89,9 @@ import {
     DialogClose
 } from '@/components/ui/dialog';
 import { deleteTravel } from "@/app/lib/actions";
+import { editTravel, State, FormResponse } from '@/app/lib/actions';
+import { LoaderCircleIcon } from 'lucide-react';
+import { toast } from "sonner";
 
 const columns: ColumnDef<TravelsTable>[] = [
     {
@@ -124,7 +124,7 @@ const columns: ColumnDef<TravelsTable>[] = [
         accessorKey: "date",
         header: "Date",
         cell: ({ row }) => {
-            return formatDateToLocal(row.original.date);
+            return formatDateToLocal(row.original.date.toString());
         },
         enableHiding: false,
     },
@@ -240,6 +240,7 @@ export function DataTable({
         pageSize: 10,
     })
 
+    // eslint-disable-next-line react-hooks/incompatible-library
     const table = useReactTable({
         data: initialData,
         columns,
@@ -451,11 +452,48 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-function SheetOpen({ item }: { item: TravelsTable }) {
-    const isMobile = useIsMobile()
+function SheetOpen({ item }: { item: TravelsTable; }) {
+    const isMobile = useIsMobile();
+    const [open, setOpen] = React.useState(false);
+    const preferences: UserData = usePreferences();
+    const formId = React.useId();
+
+    const initialState: State = { message: null, errors: {} };
+    const [response, editAction, isPending] = React.useActionState(
+        async (response: FormResponse | undefined, payload: FormData | null) => {
+            if (payload === null) {
+                return undefined;
+            }
+
+            return await editTravel(item.id, preferences.preferences, initialState, payload);
+        },
+        undefined,
+    );
+
+    const [, startTransition] = React.useTransition();
+    const reset = () => {
+        startTransition(() => {
+            editAction(null);
+        });
+    };
+
+    React.useEffect(() => {
+        if (response) {
+            setOpen(response.keepOpen);
+        } if (response && response.status === 'success' && !response.keepOpen) {
+            queueMicrotask(() => {
+                toast.success(response.message || 'Tour date edited successfully.');
+            });
+        }
+    }, [response]);
 
     return (
-        <Sheet key={item.id}>
+        <Sheet open={open} key={item.id} onOpenChange={() => {
+            setOpen(!open);
+            if (open) {
+                reset();
+            }
+        }}>
             <SheetTrigger asChild>
                 <Button variant="secondary">
                     <IconPencil />
@@ -514,36 +552,70 @@ function SheetOpen({ item }: { item: TravelsTable }) {
                             </ChartContainer>
                         </>
                     )}
-                    <form className="flex flex-col gap-4">
+                    <form id={formId} action={editAction} className="flex flex-col gap-4">
                         <div className="flex flex-col gap-3">
-                            <Label htmlFor="date">Date</Label>
-                            <Input id="date" defaultValue={item.date} type="date" />
+                            <Label htmlFor="date">Date {item.date?.toString()}</Label>
+                            <Input id="date" name='date' aria-invalid={!!response?.errors?.date} defaultValue={response?.data?.date?.toString() || Temporal.PlainDate.from({ year:  item.date.getFullYear(), month: item.date.getMonth() + 1, day: item.date.getDate() }).toString()} type="date" disabled={isPending} />
+                            <div id="date-error" aria-live="polite" aria-atomic="true">
+                                {response?.errors?.date &&
+                                    response.errors.date.map((error: string) => (
+                                        <p className='text-destructive text-xs' key={error}>{error}</p>
+                                    ))}
+                            </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
-                                <Label htmlFor="header">Destination</Label>
-                                <Input id="header" defaultValue={item.destination} />
+                                <Label htmlFor="destination">Destination</Label>
+                                <Input id="destination" name='destination' aria-invalid={!!response?.errors?.destination} defaultValue={response?.data?.destination || item.destination} disabled={isPending} />
+                                <div id="destination-error" aria-live="polite" aria-atomic="true">
+                                    {response?.errors?.destination &&
+                                        response.errors.destination.map((error: string) => (
+                                            <p className='text-destructive text-xs' key={error}>{error}</p>
+                                        ))}
+                                </div>
                             </div>
                             <div className="flex flex-col gap-3">
                                 <Label htmlFor="zip">ZIP</Label>
-                                <Input id="zip" defaultValue={item.zip} />
+                                <Input id="zip" name='zip' aria-invalid={!!response?.errors?.zip} defaultValue={response?.data?.zip || item.zip} disabled={isPending} />
+                                <div id="zip-error" aria-live="polite" aria-atomic="true">
+                                    {response?.errors?.zip &&
+                                        response.errors.zip.map((error: string) => (
+                                            <p className='text-destructive text-xs' key={error}>{error}</p>
+                                        ))}
+                                </div>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
-                                <Label htmlFor="target">Start Time</Label>
-                                <Input id="target" defaultValue={item.start_time} type="time" />
+                                <Label htmlFor="startTime">Start Time</Label>
+                                <Input id="startTime" name='startTime' aria-invalid={!!response?.errors?.startTime} defaultValue={response?.data?.startTime || item.start_time} type="time" disabled={isPending} />
+                                <div id="startTime-error" aria-live="polite" aria-atomic="true">
+                                    {response?.errors?.startTime &&
+                                        response.errors.startTime.map((error: string) => (
+                                            <p className='text-destructive text-xs' key={error}>{error}</p>
+                                        ))}
+                                </div>
                             </div>
                             <div className="flex flex-col gap-3">
-                                <Label htmlFor="limit">End Time</Label>
-                                <Input id="limit" defaultValue={item.end_time} type="time" />
+                                <Label htmlFor="endTime">End Time</Label>
+                                <Input id="endTime" name='endTime' aria-invalid={!!response?.errors?.endTime} defaultValue={response?.data?.endTime || item.end_time} type="time" disabled={isPending} />
+                                <div id="endTime-error" aria-live="polite" aria-atomic="true">
+                                    {response?.errors?.endTime &&
+                                        response.errors.endTime.map((error: string) => (
+                                            <p className='text-destructive text-xs' key={error}>{error}</p>
+                                        ))}
+                                </div>
                             </div>
                         </div>
                     </form>
                 </div>
                 <SheetFooter>
-                    <Button disabled>Save</Button>
+                    <Button type="submit" form={formId} disabled={isPending}>
+                        {isPending && <LoaderCircleIcon className='animate-spin' />}
+                        Save
+                    </Button>
                 </SheetFooter>
+
             </SheetContent>
         </Sheet>
     );

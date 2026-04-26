@@ -2,11 +2,10 @@
 
 import { z } from 'zod';
 import postgres from 'postgres';
-import { PreferencesTable, User, Addresses } from '@/app/lib/definitions';
+import { PreferencesTable, User } from '@/app/lib/definitions';
 import { revalidatePath } from 'next/cache';
 import { signIn, auth, getUser } from '@/auth';
 import { AuthError } from 'next-auth';
-import { createUrl } from './utils';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
@@ -95,6 +94,8 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
 }
 
 export async function editTravel(id: string, preferences: PreferencesTable, prevState: State, formData: FormData) {
+  const response: FormResponse = { status: 'success', keepOpen: false, message: 'Tour date created successfully.' };
+  const data = Object.fromEntries(formData);
   const validatedFields = CreateTravel.safeParse({
     destination: formData.get('destination'),
     zip: formData.get('zip'),
@@ -104,11 +105,14 @@ export async function editTravel(id: string, preferences: PreferencesTable, prev
   });
 
   if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Parse Travel.',
-    };
+    response.status = 'error';
+    response.errors = validatedFields.error.flatten().fieldErrors;
+    response.keepOpen = true;
+    response.message = 'Missing Fields. Failed to Parse Travel.';
+    response.data = data as unknown as FormSchemaType;
+    return response;
   }
+
   const { destination, zip, date, startTime, endTime } = validatedFields.data;
 
   const duration = 111;
@@ -124,19 +128,25 @@ export async function editTravel(id: string, preferences: PreferencesTable, prev
       WHERE id = ${id}
     `;
   } catch (error) {
-    console.error(error);
+    console.error('Update Error:', error);
+    response.status = 'error';
+    response.keepOpen = true;
+    response.message = 'Failed to update travel record.';
+    response.data = formData as unknown as FormSchemaType;
+    return response;
   }
 
   revalidatePath('/dashboard/travels');
   revalidatePath('/dashboard');
+  return response;
 }
 
 export async function deleteTravel(id: string) {
-  // throw new Error('Failed to Delete Travel');
   try {
     await sql`DELETE FROM travels WHERE id = ${id}`;
   } catch (error) {
-
+    console.error('Delete Error:', error);
+    throw new Error('Failed to delete travel record.');
   }
   revalidatePath('/dashboard/travels');
   revalidatePath('/dashboard');

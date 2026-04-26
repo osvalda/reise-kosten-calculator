@@ -19,8 +19,7 @@ import { useState, useEffect } from 'react';
 import { SmartTimeInput } from '@osvalda/smart-time-input';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { TriangleAlertIcon } from 'lucide-react';
-import { toast } from "sonner"
-
+import { toast } from "sonner";
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [open, setOpen] = useState(false);
@@ -37,7 +36,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         undefined,
     );
 
-    const [isPendingReset, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const reset = () => {
         startTransition(() => {
             formAction(null);
@@ -58,7 +57,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
 
     return <Dialog modal open={open} onOpenChange={() => {
         setOpen(!open);
-        if (!open) {
+        if (open) {
             reset();
         }
     }}>
