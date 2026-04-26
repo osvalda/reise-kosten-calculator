@@ -2,24 +2,22 @@
 
 import { z } from 'zod';
 import postgres from 'postgres';
-import { PreferencesTable, User, Addresses } from '@/app/lib/definitions';
+import { PreferencesTable, User } from '@/app/lib/definitions';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import { signIn, auth, getUser } from '@/auth';
 import { AuthError } from 'next-auth';
-import { createUrl } from './utils';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 const FormSchema = z.object({
   id: z.string(),
-  destination: z.string().min(3, {message: "Please provide a destination."}),
-  zip: z.string().min(4, {message: "Please provide a ZIP."}),
+  destination: z.string().min(3, { message: "Please provide a destination." }),
+  zip: z.string().min(4, { message: "Please provide a ZIP." }),
   date: z.coerce.date({
-    invalid_type_error: 'Please provide date of travel.',
+    // invalid_type_error: 'Please provide date of travel.',
   }),
-  startTime: z.string().min(5, {message: "Please provide start time."}),
-  endTime: z.string().min(5, {message: "Please provide end time."}),
+  startTime: z.string().min(5, { message: "Please provide start time." }),
+  endTime: z.string().min(5, { message: "Please provide end time." }),
 });
 
 const CreateTravel = FormSchema.omit({ id: true });
@@ -35,42 +33,24 @@ export type State = {
   message?: string | null;
 };
 
+export type FormSchemaType = z.infer<typeof FormSchema>;
+export type FormResponse = {
+  status: 'success' | 'error';
+  keepOpen: boolean;
+  errors?: {
+    date?: string[];
+    destination?: string[];
+    zip?: string[];
+    startTime?: string[];
+    endTime?: string[];
+  };
+  message?: string;
+  data?: FormSchemaType;
+};
+
 export async function createTravel(preferences: PreferencesTable, prevState: State, formData: FormData) {
-    const validatedFields = CreateTravel.safeParse({
-        destination: formData.get('destination'),
-        zip: formData.get('zip'),
-        date: formData.get('date'),
-        startTime: formData.get('startTime'),
-        endTime: formData.get('endTime'),
-    });
-
-    if (!validatedFields.success) {
-      return {
-        errors: validatedFields.error.flatten().fieldErrors,
-        message: 'Missing Fields. Failed to Create Travel.',
-      };
-    }
-    const { destination, zip, date, startTime, endTime } = validatedFields.data;
-
-    let duration = 111;
-    let roundedDuration = 222;
-    let dailyAmount = preferences.daily_fee * 10;
-
-    try {
-      await sql`
-        INSERT INTO travels (user_id, destination, date, start_time, end_time, duration, rounded_duration, daily_amount, zip)
-        VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTime}, ${endTime}, ${duration}, ${roundedDuration}, ${dailyAmount}, ${zip})
-      `;
-    } catch (error) {
-      console.error(error);
-    }
-
-  revalidatePath('/dashboard/travels');
-  revalidatePath('/dashboard');
-  redirect('/dashboard/travels');
-}
-
-export async function editTravel(id: string, preferences: PreferencesTable, prevState: State, formData: FormData) {
+  const response: FormResponse = { status: 'success', keepOpen: false, message: 'Tour date created successfully.' };
+  const data = Object.fromEntries(formData);
   const validatedFields = CreateTravel.safeParse({
     destination: formData.get('destination'),
     zip: formData.get('zip'),
@@ -80,16 +60,64 @@ export async function editTravel(id: string, preferences: PreferencesTable, prev
   });
 
   if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Parse Travel.',
-    };
+    response.status = 'error';
+    response.errors = validatedFields.error.flatten().fieldErrors;
+    response.keepOpen = true;
+    response.message = 'Missing Fields. Failed to Create Travel.';
+    response.data = data as unknown as FormSchemaType;
+    return response;
   }
+
   const { destination, zip, date, startTime, endTime } = validatedFields.data;
 
-  let duration = 111;
-  let roundedDuration = 222;
-  let dailyAmount = preferences.daily_fee * 10;
+  const duration = 111;
+  const roundedDuration = 222;
+  const dailyAmount = preferences.daily_fee * 10;
+
+  try {
+    await sql`
+        INSERT INTO travels (user_id, destination, date, start_time, end_time, duration, rounded_duration, daily_amount, zip)
+        VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTime}, ${endTime}, ${duration}, ${roundedDuration}, ${dailyAmount}, ${zip})
+      `;
+  } catch (error) {
+    console.error('Create Error:', error);
+    response.status = 'error';
+    response.keepOpen = true;
+    response.message = 'Failed to create travel record.';
+    response.data = formData as unknown as FormSchemaType;
+    return response;
+  }
+
+  revalidatePath('/dashboard/travels');
+  revalidatePath('/dashboard');
+  return response;
+}
+
+export async function editTravel(id: string, preferences: PreferencesTable, prevState: State, formData: FormData) {
+  const response: FormResponse = { status: 'success', keepOpen: false, message: 'Tour date created successfully.' };
+  const data = Object.fromEntries(formData);
+  const validatedFields = CreateTravel.safeParse({
+    destination: formData.get('destination'),
+    zip: formData.get('zip'),
+    date: formData.get('date'),
+    startTime: formData.get('startTime'),
+    endTime: formData.get('endTime'),
+  });
+
+  if (!validatedFields.success) {
+    response.status = 'error';
+    response.errors = validatedFields.error.flatten().fieldErrors;
+    response.keepOpen = true;
+    response.message = 'Missing Fields. Failed to Parse Travel.';
+    response.data = data as unknown as FormSchemaType;
+    return response;
+  }
+
+  const { destination, zip, date, startTime, endTime } = validatedFields.data;
+
+  const duration = 111;
+  const roundedDuration = 222;
+  const dailyAmount = preferences.daily_fee * 10;
 
   try {
     await sql`
@@ -100,20 +128,25 @@ export async function editTravel(id: string, preferences: PreferencesTable, prev
       WHERE id = ${id}
     `;
   } catch (error) {
-    console.error(error);
+    console.error('Update Error:', error);
+    response.status = 'error';
+    response.keepOpen = true;
+    response.message = 'Failed to update travel record.';
+    response.data = formData as unknown as FormSchemaType;
+    return response;
   }
 
   revalidatePath('/dashboard/travels');
   revalidatePath('/dashboard');
-  redirect('/dashboard/travels');
+  return response;
 }
 
 export async function deleteTravel(id: string) {
-  // throw new Error('Failed to Delete Travel');
   try {
     await sql`DELETE FROM travels WHERE id = ${id}`;
   } catch (error) {
-
+    console.error('Delete Error:', error);
+    throw new Error('Failed to delete travel record.');
   }
   revalidatePath('/dashboard/travels');
   revalidatePath('/dashboard');
@@ -138,7 +171,7 @@ export async function authenticate(
   }
 }
 
-export async function fetchActiveUserData(): Promise<User | undefined> {
+export async function fetchActiveUserData(): Promise<User> {
   try {
     const email = await getEmailFromAuth();
     if (!email) throw new Error("Wrong email!");
@@ -170,46 +203,6 @@ export async function getEmailFromAuth(): Promise<string | undefined> {
     return email;
   } catch (error) {
     console.error("Could not auth user!");
-    throw error;
-  }
-}
-
-const geocodeAddressUrl = 'https://mapquasar.p.rapidapi.com/geocode?address=';
-const distanceUrl = "https://mapquasar.p.rapidapi.com/calculate-distance?unit=km&lat2=(lat2)&lon2=(lon2)&lat1=(lat1)&lon1=(lon1)";
-const addressDetailsUrl = "https://mapquasar.p.rapidapi.com/reverse-geocode?longitude=(lon1)&latitude=(lat1)";
-const options = {
-	method: 'GET',
-	headers: {
-		'x-rapidapi-key': '601156ccdamshd55c9436266696ap142612jsnb4a8b927a2a4',
-		'x-rapidapi-host': 'mapquasar.p.rapidapi.com'
-	}
-};
-
-export async function getGeocodeAddress(address: string): Promise<any | undefined> {
-  return fetchDestinationData(geocodeAddressUrl + address);
-}
-
-export async function getAddressDetails(lat1: string, lon1: string): Promise<any | undefined> {
-  let addresses = <Addresses>{ lon1 : lon1, lat1 : lat1 };
-  const url = createUrl(addressDetailsUrl, addresses);
-  console.log("feloldott details url: " + url);
-  return fetchDestinationData(url);
-}
-
-export async function getDistanceAsKm(lat1: string, lon1: string, lat2: string, lon2: string, ): Promise<any | undefined> {
-  let addresses = <Addresses>{ lon1 : lon1, lat1 : lat1, lon2 : lon2, lat2 : lat2 };
-  const url = createUrl(distanceUrl, addresses);
-
-  return fetchDestinationData(url);
-}
-
-async function fetchDestinationData(url: string): Promise<any | undefined> {
-  try {
-    const response = await fetch(url, options);
-    const jsresult = await response.json();
-    return jsresult;
-  } catch (error) {
-    console.error("Could not fetch data!");
     throw error;
   }
 }

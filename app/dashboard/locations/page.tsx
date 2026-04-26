@@ -4,7 +4,8 @@ export const metadata: Metadata = {
   title: 'Locations',
 };
 
-
 export default function Page() {
-  return <p>Locations Page</p>;
+  return <section>
+    <p>Locations Page</p>
+  </section>;
 }

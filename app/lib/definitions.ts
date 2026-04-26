@@ -17,16 +17,20 @@ export type PreferencesTable = {
   language: 'deutsch' | 'english' | 'magyar';
 };
 
+export type UserData = {
+  user: User;
+  preferences: PreferencesTable;
+};
+
 export type TravelsTable = {
   id: string;
   user_id: string;
-  date: string;
+  date: Date;
   destination: string;
   start_time: string;
   end_time: string;
   duration: number;
   rounded_duration: number;
-  daily_amount: number;
   zip: string;
 };
 
@@ -36,12 +40,3 @@ export type Revenue = {
   month_order: number;
   year: number;
 };
-
-export type Addresses = {
-  lat1: string;
-  lon1: string;
-  lat2: string;
-  lon2: string;
-};
-
-
