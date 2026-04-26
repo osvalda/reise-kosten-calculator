@@ -179,7 +179,7 @@ function PersonalInfo({ userData }: { userData: UserData }) {
 
             <div className='space-y-2'>
               <Label htmlFor='role'>Role</Label>
-              <Select>
+              <Select defaultValue={userData.user.role.toString()}>
                 <SelectTrigger id='role' className='w-full'>
                   <SelectValue defaultValue={userData.user.role} />
                 </SelectTrigger>
@@ -187,7 +187,6 @@ function PersonalInfo({ userData }: { userData: UserData }) {
                   <SelectGroup>
                     <SelectItem value='admin'>Admin</SelectItem>
                     <SelectItem value='user'>User</SelectItem>
-                    <SelectItem value='other'>Other</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

@@ -19,11 +19,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { RiArrowUpDownLine, RiSparklingLine, RiCheckboxCircleLine, RiLogoutBoxLine } from "@remixicon/react";
+import { RiMore2Fill, RiSparklingLine, RiCheckboxCircleLine, RiLogoutBoxLine } from "@remixicon/react";
 import { signOut } from '@/auth';
 import { User } from "@/app/lib/definitions";
+import Link from "next/link";
 
-export function NavUser({user}: { user: User }) {
+export function NavUser({ user }: { user: User }) {
   const { isMobile } = useSidebar();
 
   return (
@@ -43,7 +44,7 @@ export function NavUser({user}: { user: User }) {
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
-              <RiArrowUpDownLine className="ml-auto size-4" />
+              <RiMore2Fill className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -53,15 +54,17 @@ export function NavUser({user}: { user: User }) {
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DropdownMenuItem className="cursor-pointer">
-                <RiCheckboxCircleLine/>
-                Account
-              </DropdownMenuItem>
+              <Link href="/dashboard/settings/personal">
+                <DropdownMenuItem className="cursor-pointer">
+                  <RiCheckboxCircleLine />
+                  Account
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem className="cursor-pointer">
-                <RiSparklingLine/>
+                <RiSparklingLine />
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>

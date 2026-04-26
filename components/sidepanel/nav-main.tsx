@@ -4,7 +4,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -14,9 +14,9 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
-import { RiArrowRightSLine } from "@remixicon/react"
-import Link from "next/link"
+} from "@/components/ui/sidebar";
+import { RiArrowRightSLine } from "@remixicon/react";
+import Link from "next/link";
 
 export function NavMain({
   items,

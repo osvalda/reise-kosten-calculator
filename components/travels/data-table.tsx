@@ -495,7 +495,7 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
             }
         }}>
             <SheetTrigger asChild>
-                <Button variant="secondary">
+                <Button variant="outline">
                     <IconPencil />
                 </Button>
             </SheetTrigger>
