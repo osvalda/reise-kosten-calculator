@@ -554,8 +554,8 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                     )}
                     <form id={formId} action={editAction} className="flex flex-col gap-4">
                         <div className="flex flex-col gap-3">
-                            <Label htmlFor="date">Date {item.date?.toString()}</Label>
-                            <Input id="date" name='date' aria-invalid={!!response?.errors?.date} defaultValue={response?.data?.date?.toString() || Temporal.PlainDate.from({ year:  item.date.getFullYear(), month: item.date.getMonth() + 1, day: item.date.getDate() }).toString()} type="date" disabled={isPending} />
+                            <Label htmlFor="date">Date</Label>
+                            <Input id="date" name='date' aria-invalid={!!response?.errors?.date} defaultValue={response?.data?.date?.toString() || item.date.toLocaleString()} type="date" disabled={isPending} />
                             <div id="date-error" aria-live="polite" aria-atomic="true">
                                 {response?.errors?.date &&
                                     response.errors.date.map((error: string) => (
