@@ -1,21 +1,17 @@
-# Next.js template
+![GitHub package.json dev/peer/optional dependency version](https://img.shields.io/github/package-json/dependency-version/osvalda/reise-kosten-calculator/next)
+![GitHub package.json dev/peer/optional dependency version](https://img.shields.io/github/package-json/dependency-version/osvalda/reise-kosten-calculator/react)
+![GitHub package.json dev/peer/optional dependency version](https://img.shields.io/github/package-json/dependency-version/osvalda/reise-kosten-calculator/dev/typescript)
+[![Node.js CI](https://github.com/osvalda/smart-time-input/actions/workflows/node.js.yml/badge.svg)](https://github.com/osvalda/reise-kosten-calculator/actions/workflows/node.js.yml)
+![Endpoint Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/osvalda/8a5d45b9a00d1f3345e06dee6bb97dc9/raw/075e9235c6665b1b7126af25101cd16a6cee78be/reise-kosten-calculator-18-merge-lcov-coverage.json)
 
-This is a Next.js template with shadcn/ui.
+# AnlagePro
 
-## Adding components
+## Testing
 
-To add components to your app, run the following command:
+Execute the following command in order to run all tests:
 
 ```bash
-npx shadcn@latest add button
+npm run test
 ```
 
-This will place the ui components in the `components` directory.
-
-## Using components
-
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
-```
+The app uses jest as main testing framework and currently has unit level test cases.

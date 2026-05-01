@@ -42,6 +42,7 @@ const config: Config = {
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
+  // A list of reporter names that Jest uses when writing coverage reports
   coverageReporters: ['json-summary', "clover", "json", "lcov", "text"],
 
   // An array of regexp pattern strings used to skip coverage collection
@@ -51,14 +52,6 @@ const config: Config = {
 
   // Indicates which provider should be used to instrument code for coverage
   // coverageProvider: "babel",
-
-  // A list of reporter names that Jest uses when writing coverage reports
-  // coverageReporters: [
-  //   "json",
-  //   "text",
-  //   "lcov",
-  //   "clover"
-  // ],
 
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,
@@ -127,7 +120,7 @@ const config: Config = {
   // projects: undefined,
 
   // Use this configuration option to add custom reporters to Jest
-  // reporters: undefined,
+  reporters: [['github-actions', { silent: false }], 'summary', 'jest-junit', 'default'],
 
   // Automatically reset mock state before every test
   // resetMocks: false,
