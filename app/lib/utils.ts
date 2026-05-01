@@ -36,5 +36,8 @@ export const cutMeters = (
 export const formatDuration = (
   duration: number
 ) => {
+  if (duration < 1) {
+    duration = 0;
+  }
   return Math.trunc(duration / 60) + ":" + duration % 60;
 };
