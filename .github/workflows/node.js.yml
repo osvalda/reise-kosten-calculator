@@ -63,7 +63,7 @@ jobs:
       - run: pnpm test | tee ./coverage.txt && exit ${PIPESTATUS[0]}
 
       - name: Generating ci badge JSONs
-        if: ${{ matrix.node-version == 24 }}
+        if: ${{ matrix.node-version == 24 && github.ref == 'refs/heads/main' }}
         uses: gaelgirodon/ci-badges-action@v1
         with:
           gist-id: 8a5d45b9a00d1f3345e06dee6bb97dc9
@@ -83,8 +83,8 @@ jobs:
           coverage-title: Coverage details
           coverage-path: ./coverage.txt
           coverage-path-prefix: app/
-      - name: Fail if coverage too low
-        if: ${{ steps.coverage.outputs.coverage <= 0 }}
+      - name: Fail if coverage is too low
+        if: ${{ steps.coverage.outputs.coverage <= vars.MIN_COVERAGE }}
         run: |
-          echo "Coverage is 0%!"
-          exit 0
+          echo "Coverage is below the minimum of ${{ vars.MIN_COVERAGE }}% as it is only ${{ steps.coverage.outputs.coverage }}%!"
+          exit 1
