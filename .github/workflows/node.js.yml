@@ -84,7 +84,7 @@ jobs:
           coverage-path: ./coverage.txt
           coverage-path-prefix: app/
       - name: Fail if coverage is too low
-        if: ${{ steps.coverage.outputs.coverage <= vars.MIN_COVERAGE }}
+        if: ${{ steps.coverage.outputs.coverage < vars.MIN_COVERAGE }}
         run: |
           echo "Coverage is below the minimum of ${{ vars.MIN_COVERAGE }}% as it is only ${{ steps.coverage.outputs.coverage }}%!"
           exit 1
