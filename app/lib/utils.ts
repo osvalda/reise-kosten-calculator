@@ -5,10 +5,7 @@ export const formatCurrency = (amount: number) => {
   });
 };
 
-export const formatDateToLocal = (
-  dateStr: string,
-  locale: string = 'en-US',
-) => {
+export const formatDateToLocal = (dateStr: string, locale: string = 'en-US') => {
   const date = new Date(dateStr);
   const options: Intl.DateTimeFormatOptions = {
     day: 'numeric',
@@ -19,22 +16,34 @@ export const formatDateToLocal = (
   return formatter.format(date);
 };
 
-export const formatTime = (
-  time: string
-) => {
+export const formatTime = (time: string) => {
   const remove_after = time.lastIndexOf(':');
   return time.substring(0, remove_after);
 };
 
-export const cutMeters = (
-  dist: string
-) => {
+export const cutMeters = (dist: string) => {
+  if (dist === '' || isNumber(dist) === false) {
+    return '0';
+  }
   const remove_after = dist.lastIndexOf('.');
-  return dist.substring(0, remove_after);
+  if (remove_after === -1) {
+    return dist;
+  }
+  let result = dist.substring(0, remove_after);
+  if (result === '') {
+    result = '0';
+  }
+  return result;
 };
 
-export const formatDuration = (
-  duration: number
-) => {
+export const formatDuration = (duration: number) => {
+  if (duration < 1) {
+    duration = 0;
+  }
   return Math.trunc(duration / 60) + ":" + duration % 60;
+};
+
+export const isNumber = (val: string): boolean => {
+  const num = Number(val);
+  return !isNaN(num) && val.trim() !== "";
 };

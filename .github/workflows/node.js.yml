@@ -1,0 +1,90 @@
+name: CI
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  pull-requests: write
+  statuses: write
+  packages: read
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22, 24]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # super-linter needs the full git history to get the
+          # list of files that changed across commits
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Build app on Node.js ${{ matrix.node-version }}
+        uses: N0tExisting/setup-pnpm@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          pnpm-version: 10.11.1
+
+      - run: pnpm run build
+      # - name: Super-linter
+      #   uses: super-linter/super-linter/slim@v8.1.0
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     FILTER_REGEX_INCLUDE: ^app/
+      #     VALIDATE_GIT_COMMITLINT: false
+
+  test:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22, 24, 25]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run unit tests with Node.js ${{ matrix.node-version }}
+        uses: N0tExisting/setup-pnpm@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          pnpm-version: 10.11.1
+
+      - run: pnpm test | tee ./coverage.txt && exit ${PIPESTATUS[0]}
+
+      - name: Generating ci badge JSONs
+        if: ${{ matrix.node-version == 24 && github.ref == 'refs/heads/main' }}
+        uses: gaelgirodon/ci-badges-action@v1
+        with:
+          gist-id: 8a5d45b9a00d1f3345e06dee6bb97dc9
+          token: ${{ secrets.GIST_TOKEN }}
+          ref: true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-artifacts-${{ matrix.node-version }}
+          path: coverage
+
+      - name: Jest Coverage Comment
+        id: coverage
+        uses: MishaKav/jest-coverage-comment@main
+        with:
+          title: Code Coverage Information
+          summary-title: Code Coverage summary
+          coverage-title: Coverage details
+          coverage-path: ./coverage.txt
+          coverage-path-prefix: app/
+      - name: Fail if coverage is too low
+        if: ${{ steps.coverage.outputs.coverage < vars.MIN_COVERAGE }}
+        run: |
+          echo "Coverage is below the minimum of ${{ vars.MIN_COVERAGE }}% as it is only ${{ steps.coverage.outputs.coverage }}%!"
+          exit 1
