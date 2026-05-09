@@ -11,15 +11,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { IconPlus } from "@tabler/icons-react";
 import { createTravel, State, FormResponse } from '@/app/lib/actions';
-import { cloneElement, useActionState, useTransition } from 'react';
+import { useActionState, useTransition } from 'react';
 import { PreferencesTable } from '@/app/lib/definitions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState, useEffect } from 'react';
-import { SmartTimeInput } from '@osvalda/smart-time-input';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { TriangleAlertIcon } from 'lucide-react';
 import { toast } from "sonner";
+import TimeInputWrapper from './time-input-wrapper';
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [open, setOpen] = useState(false);
@@ -48,12 +48,10 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
             setOpen(response.keepOpen);
         } if (response && response.status === 'success' && !response.keepOpen) {
             queueMicrotask(() => {
-                toast.success(response.message || 'Tour date created successfully.');
+                toast.success(response.message || 'Travel record created successfully.');
             });
         }
     }, [response]);
-
-    const component = <SmartTimeInput aria-invalid={!!response?.errors?.startTime} initTime={response?.data?.startTime} className="h-7 w-full min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-xs/relaxed file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 md:text-xs/relaxed dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40" />;
 
     return <Dialog modal open={open} onOpenChange={() => {
         setOpen(!open);
@@ -111,7 +109,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <div className='flex flex-row gap-4'>
                     <div className='w-full space-y-3'>
                         <Label htmlFor="startTime">Start time of travel</Label>
-                        {cloneElement(component, { id: 'startTime', name: 'startTime' })}
+                        <TimeInputWrapper id="startTime" name='startTime' initTime={response?.data?.startTime} isInvalid={!!response?.errors?.startTime} />
                         <div id="startTime-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.startTime &&
                                 response.errors.startTime.map((error: string) => (
@@ -121,7 +119,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                     </div>
                     <div className='w-full space-y-3'>
                         <Label htmlFor="endTime">End time of travel</Label>
-                        <Input id="endTime" type='text' name='endTime' aria-invalid={!!response?.errors?.endTime} defaultValue={response?.data?.endTime} />
+                        <TimeInputWrapper id="endTime" name='endTime' initTime={response?.data?.endTime} isInvalid={!!response?.errors?.endTime} />
                         <div id="endTime-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.endTime &&
                                 response.errors.endTime.map((error: string) => (

@@ -1,7 +1,7 @@
-export const formatCurrency = (amount: number) => {
-  return (amount).toLocaleString('en-US', {
+export const formatCurrency = (amount: number, locale: string = 'en-US', currency: string = 'USD') => {
+  return (amount).toLocaleString(locale, {
     style: 'currency',
-    currency: 'USD',
+    currency: currency,
   });
 };
 
@@ -14,11 +14,6 @@ export const formatDateToLocal = (dateStr: string, locale: string = 'en-US') => 
   };
   const formatter = new Intl.DateTimeFormat(locale, options);
   return formatter.format(date);
-};
-
-export const formatTime = (time: string) => {
-  const remove_after = time.lastIndexOf(':');
-  return time.substring(0, remove_after);
 };
 
 export const cutMeters = (dist: string) => {
@@ -41,6 +36,24 @@ export const formatDuration = (duration: number) => {
     duration = 0;
   }
   return Math.trunc(duration / 60) + ":" + duration % 60;
+};
+
+export function calculateDuration(duration: string): number {
+  duration = duration.trim();
+  if (duration === "" || duration === "0") {
+    return 0;
+  }
+  const [hours, minutes] = duration.split(':').map(Number);
+  if (isNaN(hours) || isNaN(minutes)) {
+    throw new Error("Invalid duration format");
+  }
+  if (minutes < 0 || minutes > 59) {
+    throw new Error("Invalid minutes value");
+  }
+  if (hours < 0 || hours > 24) {
+    throw new Error("Invalid hours value");
+  }
+  return hours * 60 + minutes;
 };
 
 export const isNumber = (val: string): boolean => {
