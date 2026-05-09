@@ -24,6 +24,7 @@ const config: Config = {
     'lib/**/*.{ts,tsx}',
     '!lib/**/*.d.ts',
     'components/**/*.{ts,tsx}',
+    '!components/ui/**/*.{ts,tsx}',
     '!components/**/*.d.ts',
   ],
 
