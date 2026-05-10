@@ -62,7 +62,7 @@ export async function fetchTravelsOfUser(
   try {
     const travels = await sql<TravelsTable[]>`
       SELECT
-        id, user_id, date, destination, start_time, end_time, duration, rounded_duration, zip
+        *
       FROM travels
       WHERE
         travels.user_id = ${`${userId}`}
@@ -120,20 +120,24 @@ export async function fetchTravelById(id: string) {
 
 export async function fetchCardData() {
   try {
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM travels`;
+    const invoiceCountPromise = sql`SELECT COUNT(*) FROM travels;`;
     const roundedDurationPromise = sql`SELECT SUM(rounded_duration) FROM travels;`;
+    const summUpEarnings = sql`SELECT SUM(daily_amount) FROM travels;`;
 
     const data = await Promise.all([
       invoiceCountPromise,
       roundedDurationPromise,
+      summUpEarnings
     ]);
 
     const numberOfTravels = Number(data[0][0].count ?? '0');
     const roundedDuration = Number(data[1][0].sum ?? '0');
+    const totalEarnings = Number(data[2][0].sum ?? '0');
 
     return {
       numberOfTravels,
       roundedDuration,
+      totalEarnings
     };
   } catch (error) {
     console.error('Database Error:', error);

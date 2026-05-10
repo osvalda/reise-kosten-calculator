@@ -6,6 +6,7 @@ import { PreferencesTable, User } from '@/app/lib/definitions';
 import { revalidatePath } from 'next/cache';
 import { signIn, auth, getUser } from '@/auth';
 import { AuthError } from 'next-auth';
+import { calculateElapsedTime, calculateDurationFromTimeStamp, calculateDailyEarning, roundElapsedTimeToHour } from '@/app/lib/utils';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
@@ -70,14 +71,16 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
 
   const { destination, zip, date, startTime, endTime } = validatedFields.data;
 
-  const duration = 111;
-  const roundedDuration = 222;
-  const dailyAmount = preferences.daily_fee * 10;
+  const startTimeInMinutes = calculateDurationFromTimeStamp(startTime);
+  const endTimeInMinutes = calculateDurationFromTimeStamp(endTime);
+  const duration = calculateElapsedTime(startTimeInMinutes, endTimeInMinutes);
+  const roundedDuration = roundElapsedTimeToHour(duration, preferences.rounding_rule) * 60;
+  const dailyAmount = calculateDailyEarning(duration, preferences.daily_fee, preferences.rounding_rule);
 
   try {
     await sql`
         INSERT INTO travels (user_id, destination, date, start_time, end_time, duration, rounded_duration, daily_amount, zip)
-        VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTime}, ${endTime}, ${duration}, ${roundedDuration}, ${dailyAmount}, ${zip})
+        VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTimeInMinutes}, ${endTimeInMinutes}, ${duration}, ${roundedDuration}, ${dailyAmount}, ${zip})
       `;
   } catch (error) {
     console.error('Create Error:', error);
@@ -115,15 +118,17 @@ export async function editTravel(id: string, preferences: PreferencesTable, prev
 
   const { destination, zip, date, startTime, endTime } = validatedFields.data;
 
-  const duration = 111;
-  const roundedDuration = 222;
-  const dailyAmount = preferences.daily_fee * 10;
+  const startTimeInMinutes = calculateDurationFromTimeStamp(startTime);
+  const endTimeInMinutes = calculateDurationFromTimeStamp(endTime);
+  const duration = calculateElapsedTime(startTimeInMinutes, endTimeInMinutes);
+  const roundedDuration = roundElapsedTimeToHour(duration, preferences.rounding_rule) * 60;
+  const dailyAmount = calculateDailyEarning(duration, preferences.daily_fee, preferences.rounding_rule);
 
   try {
     await sql`
       UPDATE travels
-      SET user_id = ${preferences.user_id}, destination = ${destination}, date = ${date}, start_time = ${startTime},
-      end_time = ${endTime}, duration = ${duration}, rounded_duration = ${roundedDuration}, daily_amount = ${dailyAmount},
+      SET user_id = ${preferences.user_id}, destination = ${destination}, date = ${date}, start_time = ${startTimeInMinutes},
+      end_time = ${endTimeInMinutes}, duration = ${duration}, rounded_duration = ${roundedDuration}, daily_amount = ${dailyAmount},
       zip = ${zip}
       WHERE id = ${id}
     `;

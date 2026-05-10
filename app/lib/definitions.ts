@@ -7,12 +7,14 @@ export type User = {
   role: 'admin' | 'user';
 };
 
+export type RoundingTypes = 'math' | 'up';
+
 export type PreferencesTable = {
   id: string;
   daily_fee: number;
   home_base: string;
   user_id: string;
-  rounding_rule: 'math' | 'up';
+  rounding_rule: RoundingTypes;
   currency: 'eur' | 'usd';
   language: 'deutsch' | 'english' | 'magyar';
 };
@@ -27,10 +29,11 @@ export type TravelsTable = {
   user_id: string;
   date: Date;
   destination: string;
-  start_time: string;
-  end_time: string;
+  start_time: number;
+  end_time: number;
   duration: number;
   rounded_duration: number;
+  daily_amount: number;
   zip: string;
 };
 

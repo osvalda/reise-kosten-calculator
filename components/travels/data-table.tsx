@@ -92,6 +92,7 @@ import { deleteTravel } from "@/app/lib/actions";
 import { editTravel, State, FormResponse } from '@/app/lib/actions';
 import { LoaderCircleIcon } from 'lucide-react';
 import { toast } from "sonner";
+import TimeInputWrapper from './time-input-wrapper';
 
 const columns: ColumnDef<TravelsTable>[] = [
     {
@@ -147,14 +148,12 @@ const columns: ColumnDef<TravelsTable>[] = [
     {
         accessorKey: "start time",
         header: "Start time",
-        cell: ({ row }) => { return row.original.start_time },
+        cell: ({ row }) => { return formatDuration(row.original.start_time) }
     },
     {
         accessorKey: "end time",
         header: "End time",
-        cell: ({ row }) => (
-            <div>{row.original.end_time}</div>
-        ),
+        cell: ({ row }) => {return formatDuration(row.original.end_time)}
     },
     {
         accessorKey: "duration",
@@ -174,7 +173,7 @@ const columns: ColumnDef<TravelsTable>[] = [
         accessorKey: "daily amount",
         header: "Daily amount (€)",
         cell: ({ row }) => {
-            return formatCurrency(row.original.rounded_duration * 2.5)
+            return formatCurrency(row.original.daily_amount, 'de-DE', 'EUR');
         },
     },
     {
@@ -555,7 +554,7 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                     <form id={formId} action={editAction} className="flex flex-col gap-4">
                         <div className="flex flex-col gap-3">
                             <Label htmlFor="date">Date</Label>
-                            <Input id="date" name='date' aria-invalid={!!response?.errors?.date} defaultValue={response?.data?.date?.toString() || item.date.toLocaleString()} type="date" disabled={isPending} />
+                            <Input id="date" name='date' aria-invalid={!!response?.errors?.date} defaultValue={response?.data?.date?.toString() || item.date.toISOString().split('T')[0]} type="date" disabled={isPending} />
                             <div id="date-error" aria-live="polite" aria-atomic="true">
                                 {response?.errors?.date &&
                                     response.errors.date.map((error: string) => (
@@ -588,7 +587,7 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
                                 <Label htmlFor="startTime">Start Time</Label>
-                                <Input id="startTime" name='startTime' aria-invalid={!!response?.errors?.startTime} defaultValue={response?.data?.startTime || item.start_time} type="time" disabled={isPending} />
+                                <TimeInputWrapper id="startTime" name='startTime' isInvalid={!!response?.errors?.startTime} initTime={response?.data?.startTime || formatDuration(item.start_time)} disabled={isPending} />
                                 <div id="startTime-error" aria-live="polite" aria-atomic="true">
                                     {response?.errors?.startTime &&
                                         response.errors.startTime.map((error: string) => (
@@ -598,7 +597,7 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                             </div>
                             <div className="flex flex-col gap-3">
                                 <Label htmlFor="endTime">End Time</Label>
-                                <Input id="endTime" name='endTime' aria-invalid={!!response?.errors?.endTime} defaultValue={response?.data?.endTime || item.end_time} type="time" disabled={isPending} />
+                                <TimeInputWrapper id="endTime" name='endTime' isInvalid={!!response?.errors?.endTime} initTime={response?.data?.endTime || formatDuration(item.end_time)} disabled={isPending} />
                                 <div id="endTime-error" aria-live="polite" aria-atomic="true">
                                     {response?.errors?.endTime &&
                                         response.errors.endTime.map((error: string) => (
