@@ -6,7 +6,9 @@ import {
     calculateDurationFromTimeStamp,
     formatCurrency,
     formatDateToLocal,
-    calculateElapsedTime
+    calculateElapsedTime,
+    roundElapsedTimeToHour,
+    calculateDailyEarning,
 }
     from '../../../app/lib/utils';
 
@@ -196,5 +198,59 @@ describe('calculateElapsedTime tests', () => {
 describe('Calculate and format elapsed time', () => {
     it('Calculate then format elapsed time', () => {
         expect(formatDuration(calculateElapsedTime(calculateDurationFromTimeStamp('6:40'), calculateDurationFromTimeStamp('16:43')))).toBe('10:03');
+    });
+});
+
+describe('RoundElapsedTimeToHour tests', () => {
+    it('Rounds elapsed time up to the nearest hour correctly', () => {
+        expect(roundElapsedTimeToHour(61, 'up')).toBe(2);
+    });
+    it('Rounds elapsed time up to the nearest hour correctly', () => {
+        expect(roundElapsedTimeToHour(60, 'up')).toBe(1);
+    });
+    it('Rounds elapsed time up to the nearest hour correctly', () => {
+        expect(roundElapsedTimeToHour(0, 'up')).toBe(0);
+    });
+    it('Rounds elapsed time up to the nearest hour correctly', () => {
+        expect(roundElapsedTimeToHour(59, 'up')).toBe(1);
+    });
+    it('Rounds elapsed time up to the nearest hour correctly', () => {
+        expect(roundElapsedTimeToHour(30, 'math')).toBe(1);
+    });
+    it('Rounds elapsed time up to the nearest hour correctly', () => {
+        expect(roundElapsedTimeToHour(29, 'math')).toBe(0);
+    });
+    it('Rounds elapsed time up to the nearest hour correctly', () => {
+        expect(roundElapsedTimeToHour(490, 'up')).toBe(9);
+    });
+    it('Rounds elapsed time up to the nearest hour correctly', () => {
+        expect(roundElapsedTimeToHour(490, 'math')).toBe(8);
+    });
+    it('Rounds elapsed time up to the nearest hour correctly', () => {
+        expect(roundElapsedTimeToHour(645, 'up')).toBe(11);
+    });
+    it('Rounds elapsed time up to the nearest hour correctly', () => {
+        expect(roundElapsedTimeToHour(645, 'math')).toBe(11);
+    });
+});
+
+describe('CalculateDailyEarning tests', () => {
+    it('Calculates daily earning with up rounding correctly', () => {
+        expect(calculateDailyEarning(61, 100, 'up')).toBe(200);
+    });
+    it('Calculates daily earning with math rounding correctly', () => {
+        expect(calculateDailyEarning(645, 100, 'math')).toBe(1100);
+    });
+    it('Calculates daily earning with up rounding correctly', () => {
+        expect(calculateDailyEarning(645, 100, 'up')).toBe(1100);
+    });
+    it('Calculates daily earning with up rounding correctly', () => {
+        expect(calculateDailyEarning(645, 0, 'up')).toBe(0);
+    });
+    it('Calculates daily earning with up rounding correctly', () => {
+        expect(calculateDailyEarning(0, 10, 'up')).toBe(0);
+    });
+    it('Calculates daily earning with up rounding correctly', () => {
+        expect(calculateDailyEarning(60, 2.5, 'up')).toBe(2.5);
     });
 });

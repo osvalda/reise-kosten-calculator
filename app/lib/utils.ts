@@ -1,3 +1,5 @@
+import { RoundingTypes } from "./definitions";
+
 export const formatCurrency = (amount: number, locale: string = 'en-US', currency: string = 'USD') => {
   return (amount).toLocaleString(locale, {
     style: 'currency',
@@ -72,3 +74,16 @@ export const isNumber = (val: string): boolean => {
   const num = Number(val);
   return !isNaN(num) && val.trim() !== "";
 };
+
+export function calculateDailyEarning(elapsedTime: number, dailyFee: number, rounding: RoundingTypes): number {
+  const roundedAmount = roundElapsedTimeToHour(elapsedTime, rounding);
+
+  return roundedAmount * dailyFee;
+}
+
+export function roundElapsedTimeToHour(elapsedTime: number, rounding: RoundingTypes): number {
+  if (rounding === 'up') {
+    return Math.trunc(elapsedTime / 60) + ((elapsedTime % 60 > 0) ? 1 : 0);
+  }
+  return Math.trunc(elapsedTime / 60) + ((elapsedTime % 60 >= 30) ? 1 : 0);
+}

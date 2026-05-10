@@ -109,7 +109,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <div className='flex flex-row gap-4'>
                     <div className='w-full space-y-3'>
                         <Label htmlFor="startTime">Start time of travel</Label>
-                        <TimeInputWrapper id="startTime" name='startTime' initTime={response?.data?.startTime} isInvalid={!!response?.errors?.startTime} />
+                        <TimeInputWrapper id="startTime" name='startTime' initTime={response?.data?.startTime} isInvalid={!!response?.errors?.startTime} disabled={isPending} />
                         <div id="startTime-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.startTime &&
                                 response.errors.startTime.map((error: string) => (
@@ -119,7 +119,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                     </div>
                     <div className='w-full space-y-3'>
                         <Label htmlFor="endTime">End time of travel</Label>
-                        <TimeInputWrapper id="endTime" name='endTime' initTime={response?.data?.endTime} isInvalid={!!response?.errors?.endTime} />
+                        <TimeInputWrapper id="endTime" name='endTime' initTime={response?.data?.endTime} isInvalid={!!response?.errors?.endTime} disabled={isPending} />
                         <div id="endTime-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.endTime &&
                                 response.errors.endTime.map((error: string) => (
