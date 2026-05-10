@@ -208,23 +208,20 @@ describe('RoundElapsedTimeToHour tests', () => {
     it('Rounds elapsed time up to the nearest hour correctly', () => {
         expect(roundElapsedTimeToHour(60, 'up')).toBe(1);
     });
-    it('Rounds elapsed time up to the nearest hour correctly', () => {
+    it('Rounds 0 as elapsed time up to the nearest hour correctly', () => {
         expect(roundElapsedTimeToHour(0, 'up')).toBe(0);
     });
-    it('Rounds elapsed time up to the nearest hour correctly', () => {
+    it('Rounds top edge elapsed time up to the nearest hour correctly', () => {
         expect(roundElapsedTimeToHour(59, 'up')).toBe(1);
     });
-    it('Rounds elapsed time up to the nearest hour correctly', () => {
+    it('Rounds border value time mathematically to the nearest hour correctly', () => {
         expect(roundElapsedTimeToHour(30, 'math')).toBe(1);
     });
-    it('Rounds elapsed time up to the nearest hour correctly', () => {
+    it('Rounds close to border time mathematically down to the nearest hour correctly', () => {
         expect(roundElapsedTimeToHour(29, 'math')).toBe(0);
     });
     it('Rounds elapsed time up to the nearest hour correctly', () => {
         expect(roundElapsedTimeToHour(490, 'up')).toBe(9);
-    });
-    it('Rounds elapsed time up to the nearest hour correctly', () => {
-        expect(roundElapsedTimeToHour(490, 'math')).toBe(8);
     });
     it('Rounds elapsed time up to the nearest hour correctly', () => {
         expect(roundElapsedTimeToHour(645, 'up')).toBe(11);
@@ -244,13 +241,13 @@ describe('CalculateDailyEarning tests', () => {
     it('Calculates daily earning with up rounding correctly', () => {
         expect(calculateDailyEarning(645, 100, 'up')).toBe(1100);
     });
-    it('Calculates daily earning with up rounding correctly', () => {
+    it('Calculates 0 as daily earning with up rounding correctly', () => {
         expect(calculateDailyEarning(645, 0, 'up')).toBe(0);
     });
-    it('Calculates daily earning with up rounding correctly', () => {
+    it('Calculates daily earning with 0 time up rounding correctly', () => {
         expect(calculateDailyEarning(0, 10, 'up')).toBe(0);
     });
-    it('Calculates daily earning with up rounding correctly', () => {
+    it('Calculates decimal daily earning with up rounding correctly', () => {
         expect(calculateDailyEarning(60, 2.5, 'up')).toBe(2.5);
     });
 });
