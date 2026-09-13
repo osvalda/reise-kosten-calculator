@@ -13,6 +13,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@next/env": "^16.3.5",
     "@osvalda/smart-time-input": "^1.1.1",
     "@remixicon/react": "^4.9.0",
     "@tabler/icons-react": "^3.41.1",
@@ -20,6 +21,7 @@
     "@zxcvbn-ts/core": "^3.0.4",
     "@zxcvbn-ts/language-common": "^3.0.4",
     "@zxcvbn-ts/language-en": "^3.0.2",
+    "axios": "^1.20.0",
     "bcrypt": "^6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -32,6 +32,7 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { TriangleAlertIcon } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
+import { geocodeResponse, geocodingData } from '@/app/lib/mapActions';
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [open, setOpen] = useState(false);
@@ -48,11 +49,25 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         undefined,
     );
 
+    const [geoCodes, setGeoCodes] = useState({
+        lat: 0,
+        lon: 0,
+        postcode: "",
+        city: "",
+        error: undefined
+    } as geocodeResponse);
+
+    const handleLocationBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
+        const geoCode = await geocodingData(event.target.value, event.target.name === 'zip' ? 'postcode' : 'city');
+        setGeoCodes(geoCode);
+    };
+
     const [, startTransition] = useTransition();
     const reset = () => {
         startTransition(() => {
             formAction(null);
         });
+        setGeoCodes({ lat: 0, lon: 0, postcode: "", city: "", error: undefined });
     };
 
     useEffect(() => {
@@ -102,7 +117,12 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <FieldGroup className='flex flex-row gap-4'>
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="destination">Destination of travel</FieldLabel>
-                        <Input id="destination" type='text' name='destination' aria-invalid={!!response?.errors?.destination} defaultValue={response?.data?.destination} />
+                        <Input id="destination"
+                            type='text'
+                            name='destination'
+                            aria-invalid={!!response?.errors?.destination}
+                            defaultValue={response?.data?.destination || geoCodes.city}
+                            onBlur={handleLocationBlur} />
                         <FieldError id="destination-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.destination &&
                                 response.errors.destination.map((error: string) => (
@@ -113,7 +133,12 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
 
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="zip">ZIP of travel</FieldLabel>
-                        <Input id="zip" type='text' name='zip' aria-invalid={!!response?.errors?.zip} defaultValue={response?.data?.zip} />
+                        <Input id="zip"
+                            type='text'
+                            name='zip'
+                            aria-invalid={!!response?.errors?.zip}
+                            defaultValue={response?.data?.zip || geoCodes.postcode}
+                            onBlur={handleLocationBlur} />
                         <FieldError id="zip-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.zip &&
                                 response.errors.zip.map((error: string) => (
@@ -150,12 +175,12 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <FieldGroup className='flex flex-row gap-4'>
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="distance">Calculated distance</FieldLabel>
-                        <Input id="distance" name='distance' value="83 km" disabled={true} />
+                        <Input id="distance" name='distance' value="béla" disabled={true} />
                     </Field>
 
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="ist">Calculated IST</FieldLabel>
-                        <Input id="ist" name='ist' value="4:55"  disabled={true} />
+                        <Input id="ist" name='ist' value={geoCodes?.lat + ", " + geoCodes?.lon} disabled={true} />
                     </Field>
                 </FieldGroup>
                 {response?.status === 'error' && response?.message && (
@@ -167,7 +192,9 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
 
                 <DialogFooter className='mt-4 gap-4 sm:justify-end'>
                     <DialogClose asChild>
-                        <Button variant='outline'>Cancel</Button>
+                        <Button variant='outline'>
+                            Cancel
+                        </Button>
                     </DialogClose>
                     <Button type='submit' disabled={isPending} variant='default'>{isPending ? "Adding..." : "Add"}</Button>
                 </DialogFooter>
