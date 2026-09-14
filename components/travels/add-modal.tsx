@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
+"use client";
+
 import {
     Dialog,
     DialogTrigger,
@@ -33,8 +35,17 @@ import { TriangleAlertIcon } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
 import { geocodeResponse, geocodingData } from '@/app/lib/mapActions';
+import { useGeoapifyDataQuery } from '@/hooks/useGeoApifyDataQuery';
+import { GeoapifyApiResponse } from '@/app/lib/types/geoapifyApi.types';
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
+    const { error, data, isLoading, refetch } = useGeoapifyDataQuery({ text: 'mattersburg' });
+    if (data && !isLoading) {
+
+        console.log('Geoapify Data:', data.results[0].postcode);
+
+    }
+
     const [open, setOpen] = useState(false);
     const initialState: State = { message: null, errors: {} };
 
@@ -175,7 +186,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <FieldGroup className='flex flex-row gap-4'>
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="distance">Calculated distance</FieldLabel>
-                        <Input id="distance" name='distance' value="béla" disabled={true} />
+                        <Input id="distance" name='distance' value="bela" disabled={true} />
                     </Field>
 
                     <Field className='w-full space-y-0'>

@@ -93,7 +93,13 @@ import { editTravel, State, FormResponse } from '@/app/lib/actions';
 import { LoaderCircleIcon } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
-import Image from "next/image"
+import Image from "next/image";
+import {
+    QueryClientProvider,
+    QueryClient,
+} from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const columns: ColumnDef<TravelsTable>[] = [
     {
@@ -304,7 +310,9 @@ export function DataTable({
                                 })}
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <AddModal preferences={preferences.preferences} />
+                    <QueryClientProvider client={queryClient}>
+                        <AddModal preferences={preferences.preferences} />
+                    </QueryClientProvider>
                 </div>
             </div>
             {/* Table body */}
