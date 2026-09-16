@@ -39,11 +39,11 @@ import { useGeoapifyDataQuery } from '@/hooks/useGeoApifyDataQuery';
 import { GeoapifyApiResponse } from '@/app/lib/types/geoapifyApi.types';
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
-    const { error, data, isLoading, refetch } = useGeoapifyDataQuery({ text: 'mattersburg' });
+    const [locationQuery, setLocationQuery] = useState<{text: string}>();
+    const { error, data, isLoading, refetch } = useGeoapifyDataQuery(locationQuery);
     if (data && !isLoading) {
 
         console.log('Geoapify Data:', data.results[0].postcode);
-
     }
 
     const [open, setOpen] = useState(false);
@@ -60,17 +60,19 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         undefined,
     );
 
-    const [geoCodes, setGeoCodes] = useState({
-        lat: 0,
-        lon: 0,
-        postcode: "",
-        city: "",
-        error: undefined
-    } as geocodeResponse);
+    // const [geoCodes, setGeoCodes] = useState({
+    //     lat: 0,
+    //     lon: 0,
+    //     postcode: "",
+    //     city: "",
+    //     error: undefined
+    // } as geocodeResponse);
 
     const handleLocationBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
-        const geoCode = await geocodingData(event.target.value, event.target.name === 'zip' ? 'postcode' : 'city');
-        setGeoCodes(geoCode);
+        // const geoCode = await geocodingData(event.target.value, event.target.name === 'zip' ? 'postcode' : 'city');
+        // setGeoCodes(geoCode);
+        setLocationQuery({text: event.target.value});
+        await refetch();
     };
 
     const [, startTransition] = useTransition();
@@ -78,7 +80,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         startTransition(() => {
             formAction(null);
         });
-        setGeoCodes({ lat: 0, lon: 0, postcode: "", city: "", error: undefined });
+        //setGeoCodes({ lat: 0, lon: 0, postcode: "", city: "", error: undefined });
     };
 
     useEffect(() => {
@@ -132,7 +134,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                             type='text'
                             name='destination'
                             aria-invalid={!!response?.errors?.destination}
-                            defaultValue={response?.data?.destination || geoCodes.city}
+                            defaultValue={response?.data?.destination || data?.results[0]?.city}
                             onBlur={handleLocationBlur} />
                         <FieldError id="destination-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.destination &&
@@ -148,7 +150,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                             type='text'
                             name='zip'
                             aria-invalid={!!response?.errors?.zip}
-                            defaultValue={response?.data?.zip || geoCodes.postcode}
+                            defaultValue={response?.data?.zip || data?.results[0]?.postcode}
                             onBlur={handleLocationBlur} />
                         <FieldError id="zip-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.zip &&
@@ -191,7 +193,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
 
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="ist">Calculated IST</FieldLabel>
-                        <Input id="ist" name='ist' value={geoCodes?.lat + ", " + geoCodes?.lon} disabled={true} />
+                        <Input id="ist" name='ist' value={data?.results[0]?.lat + ", " + data?.results[0]?.lon} disabled={true} />
                     </Field>
                 </FieldGroup>
                 {response?.status === 'error' && response?.message && (

@@ -12,7 +12,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         const searchParams = request.nextUrl.searchParams;
 
         const params: GeoapifyApiParams = {
-            text: searchParams.get('text') ?? undefined,
+            text: searchParams.get('text') ?? "",
         };
 
         // Call the server-side API client
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         if (!result.success) {
             return NextResponse.json(
                 { error: result.error },
-                { status: 500 }
+                { status: 400 }
             );
         }
 

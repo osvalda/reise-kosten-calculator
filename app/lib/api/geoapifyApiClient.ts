@@ -16,10 +16,7 @@ const createGeoApifyApiClient = (): AxiosInstance => {
         timeout: env.externalApi.timeout,
         headers: {
             'Content-Type': 'application/json',
-            //'Authorization': `Bearer ${env.externalApi.apiKey}`,
-            // Alternative header formats depending on API requirements:
-            // 'X-API-Key': env.externalApi.apiKey,
-            // 'Api-Key': env.externalApi.apiKey,
+            'x-api-key': env.externalApi.apiKey,
         },
     });
 
@@ -69,9 +66,12 @@ export const fetchGeoapifyData = async (
                 limit: params?.limit ?? 10,
                 type: params?.type ?? 'city',
                 format: params?.format ?? 'json',
-                apiKey: params?.apiKey ?? env.externalApi.apiKey,
             },
         };
+
+        if (!config.params.text) {
+            throw new Error('The \'text\' parameter is required for the Geoapify API request.');
+        }
 
         const response = await externalApiClient.get<GeoapifyApiResponse[]>(
             '/geocode/search',

@@ -22,7 +22,7 @@ export interface GeoapifyApiResponse {
  * Request parameters for the API call
  */
 export interface GeoapifyApiParams {
-    text?: string;
+    text: string;
     limit?: number;
     type?: "city" | "postcode";
     format?: "json" | "xml";
