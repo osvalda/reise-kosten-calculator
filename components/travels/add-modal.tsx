@@ -72,7 +72,6 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         // const geoCode = await geocodingData(event.target.value, event.target.name === 'zip' ? 'postcode' : 'city');
         // setGeoCodes(geoCode);
         setLocationQuery({text: event.target.value});
-        await refetch();
     };
 
     const [, startTransition] = useTransition();
