@@ -12,17 +12,14 @@ export interface GeoapifyApiResponse {
 }
 
 export interface GeoapifyRoutingApiResponse {
-    features: [{
-        properties: {
-            distance: number;
-            distance_units: string;
-        }
+    results: [{
+        distance: number;
+        distance_units: string;
     }],
-    properties: {
-        mode: string;
-        units: string;
-    },
-    type: string;
+    query: {
+        text: string;
+        limit: number;
+    }
 }
 
 // Represents a single [lat, lon] pair

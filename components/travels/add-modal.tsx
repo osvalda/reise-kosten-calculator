@@ -28,8 +28,8 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { TriangleAlertIcon } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
-import { useGeoapifyDataQuery } from '@/hooks/useGeoApifyDataQuery';
-import { GeoapifyApiParams, GeoapifyApiResponse } from '@/app/lib/types/geoapifyApi.types';
+import { useGeoapifyDataQuery, useGeoapifyRoutingDataQuery } from '@/hooks/useGeoApifyDataQuery';
+import { GeoapifyApiParams, GeoapifyApiResponse, GeoapifyRoutingApiParams } from '@/app/lib/types/geoapifyApi.types';
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [open, setOpen] = useState(false);
@@ -37,6 +37,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [cityInput, setCityInput] = useState('');
     const [zipInput, setZipInput] = useState('');
     const [locationQuery, setLocationQuery] = useState<GeoapifyApiParams>();
+    const [routingQuery, setRoutingQuery] = useState<GeoapifyRoutingApiParams>();
     const { error, data, isLoading, refetch, isSuccess } = useGeoapifyDataQuery(locationQuery);
     const handleLocationBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
         switch (event.target.name) {
@@ -59,8 +60,16 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         if (isSuccess) {
             setZipInput(data?.results[0]?.postcode || zipInput);
             setCityInput(data?.results[0]?.city || cityInput);
+            setRoutingQuery({
+                waypoints: [
+                    [data?.results[0]?.lat || 40, data?.results[0]?.lon || 40],
+                    [preferences.lat || 0, preferences.lon || 0]
+                ]
+            });
         }
-    }, [isSuccess, data]);
+    }, [isSuccess, data, zipInput, cityInput, preferences]);
+
+    const routingResult = useGeoapifyRoutingDataQuery(routingQuery);
 
     const initialState: State = { message: null, errors: {} };
     const [response, formAction, isPending] = useActionState(
@@ -196,7 +205,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <FieldGroup className='flex flex-row gap-4'>
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="distance">Calculated distance</FieldLabel>
-                        <Input id="distance" name='distance' value="bela" disabled={true} />
+                        <Input id="distance" name='distance' value={routingResult.data?.results[0]?.distance + " meters"} disabled={true} />
                     </Field>
 
                     <Field className='w-full space-y-0'>
