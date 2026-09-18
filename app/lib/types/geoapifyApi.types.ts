@@ -26,7 +26,6 @@ export interface GeoapifyApiParams {
     limit?: number;
     type?: "city" | "postcode";
     format?: "json" | "xml";
-    apiKey?: string;
 }
 
 /**

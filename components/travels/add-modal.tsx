@@ -34,21 +34,36 @@ import { Alert, AlertTitle } from '@/components/ui/alert';
 import { TriangleAlertIcon } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
-import { geocodeResponse, geocodingData } from '@/app/lib/mapActions';
 import { useGeoapifyDataQuery } from '@/hooks/useGeoApifyDataQuery';
 import { GeoapifyApiResponse } from '@/app/lib/types/geoapifyApi.types';
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
-    const [locationQuery, setLocationQuery] = useState<{text: string}>();
-    const { error, data, isLoading, refetch } = useGeoapifyDataQuery(locationQuery);
-    if (data && !isLoading) {
-
-        console.log('Geoapify Data:', data.results[0].postcode);
-    }
-
     const [open, setOpen] = useState(false);
-    const initialState: State = { message: null, errors: {} };
 
+    const [cityInput, setCityInput] = useState('');
+    const [zipInput, setZipInput] = useState('');
+    const [locationQuery, setLocationQuery] = useState<{ text: string }>();
+    const { error, data, isLoading, refetch, isSuccess } = useGeoapifyDataQuery(locationQuery);
+    const handleLocationBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
+        switch (event.target.name) {
+            case 'destination':
+                setLocationQuery({ text: cityInput });
+                break;
+            case 'zip':
+                setLocationQuery({ text: zipInput });
+                break;
+            default:
+                break;
+        }
+    };
+    useEffect(() => {
+        if (isSuccess) {
+            setZipInput(data?.results[0]?.postcode || '');
+            setCityInput(data?.results[0]?.city || '');
+        }
+    }, [isSuccess, data]);
+
+    const initialState: State = { message: null, errors: {} };
     const [response, formAction, isPending] = useActionState(
         async (response: FormResponse | undefined, payload: FormData | null) => {
             if (payload === null) {
@@ -60,26 +75,13 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         undefined,
     );
 
-    // const [geoCodes, setGeoCodes] = useState({
-    //     lat: 0,
-    //     lon: 0,
-    //     postcode: "",
-    //     city: "",
-    //     error: undefined
-    // } as geocodeResponse);
-
-    const handleLocationBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
-        // const geoCode = await geocodingData(event.target.value, event.target.name === 'zip' ? 'postcode' : 'city');
-        // setGeoCodes(geoCode);
-        setLocationQuery({text: event.target.value});
-    };
-
     const [, startTransition] = useTransition();
     const reset = () => {
         startTransition(() => {
             formAction(null);
         });
-        //setGeoCodes({ lat: 0, lon: 0, postcode: "", city: "", error: undefined });
+        setCityInput('');
+        setZipInput('');
     };
 
     useEffect(() => {
@@ -133,8 +135,12 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                             type='text'
                             name='destination'
                             aria-invalid={!!response?.errors?.destination}
-                            defaultValue={response?.data?.destination || data?.results[0]?.city}
-                            onBlur={handleLocationBlur} />
+                            defaultValue={response?.data?.destination}
+                            value={cityInput}
+                            onChange={(e) => setCityInput(e.target.value)}
+                            onBlur={handleLocationBlur}
+                            disabled={isLoading}
+                        />
                         <FieldError id="destination-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.destination &&
                                 response.errors.destination.map((error: string) => (
@@ -149,8 +155,12 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                             type='text'
                             name='zip'
                             aria-invalid={!!response?.errors?.zip}
-                            defaultValue={response?.data?.zip || data?.results[0]?.postcode}
-                            onBlur={handleLocationBlur} />
+                            defaultValue={response?.data?.zip}
+                            value={zipInput}
+                            onChange={(e) => setZipInput(e.target.value)}
+                            onBlur={handleLocationBlur}
+                            disabled={isLoading}
+                        />
                         <FieldError id="zip-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.zip &&
                                 response.errors.zip.map((error: string) => (
