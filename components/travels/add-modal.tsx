@@ -1,30 +1,77 @@
 /* eslint-disable react-hooks/set-state-in-effect */
+"use client";
+
 import {
     Dialog,
     DialogTrigger,
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
     DialogFooter,
     DialogClose
 } from '@/components/ui/dialog';
+import {
+    Field,
+    FieldError,
+    FieldGroup,
+    FieldLabel,
+} from "@/components/ui/field"
 import { Button } from "@/components/ui/button";
 import { IconPlus } from "@tabler/icons-react";
 import { createTravel, State, FormResponse } from '@/app/lib/actions';
 import { useActionState, useTransition } from 'react';
 import { PreferencesTable } from '@/app/lib/definitions';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useState, useEffect } from 'react';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { TriangleAlertIcon } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
+import { useGeoapifyDataQuery, useGeoapifyRoutingDataQuery } from '@/hooks/useGeoApifyDataQuery';
+import { GeoapifyApiParams, GeoapifyApiResponse, GeoapifyRoutingApiParams } from '@/app/lib/types/geoapifyApi.types';
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [open, setOpen] = useState(false);
-    const initialState: State = { message: null, errors: {} };
 
+    const [cityInput, setCityInput] = useState('');
+    const [zipInput, setZipInput] = useState('');
+    const [locationQuery, setLocationQuery] = useState<GeoapifyApiParams>();
+    const [routingQuery, setRoutingQuery] = useState<GeoapifyRoutingApiParams>();
+    const { error, data, isLoading, refetch, isSuccess } = useGeoapifyDataQuery(locationQuery);
+    const handleLocationBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
+        switch (event.target.name) {
+            case 'destination':
+                setLocationQuery({
+                    text: cityInput
+                });
+                break;
+            case 'zip':
+                setLocationQuery({
+                    text: zipInput,
+                    filter: "hu,at,de"
+                });
+                break;
+            default:
+                break;
+        }
+    };
+    useEffect(() => {
+        if (isSuccess) {
+            setZipInput(data?.results[0]?.postcode || zipInput);
+            setCityInput(data?.results[0]?.city || cityInput);
+            setRoutingQuery({
+                waypoints: [
+                    [data?.results[0]?.lat || 40, data?.results[0]?.lon || 40],
+                    [preferences.lat || 0, preferences.lon || 0]
+                ]
+            });
+        }
+    }, [isSuccess, data, zipInput, cityInput, preferences]);
+
+    const routingResult = useGeoapifyRoutingDataQuery(routingQuery);
+
+    const initialState: State = { message: null, errors: {} };
     const [response, formAction, isPending] = useActionState(
         async (response: FormResponse | undefined, payload: FormData | null) => {
             if (payload === null) {
@@ -41,6 +88,8 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         startTransition(() => {
             formAction(null);
         });
+        setCityInput('');
+        setZipInput('');
     };
 
     useEffect(() => {
@@ -69,68 +118,103 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
             <form action={formAction}>
                 <DialogHeader className='mb-4'>
                     <DialogTitle>Add Travel Record</DialogTitle>
+                    <DialogDescription>
+                        Please fill in the details below to add a new travel record.
+                    </DialogDescription>
                 </DialogHeader>
 
-                <div className='w-full space-y-3'>
-                    <Label htmlFor="date">Date of travel</Label>
-                    <Input id="date" type='date' name='date' aria-invalid={!!response?.errors?.date} defaultValue={response?.data?.date?.toString()} />
-                    <div id="date-error" aria-live="polite" aria-atomic="true">
-                        {response?.errors?.date &&
-                            response.errors.date.map((error: string) => (
-                                <p className='text-destructive text-xs' key={error}>{error}</p>
-                            ))}
-                    </div>
-                </div>
+                <FieldGroup className='w-full'>
+                    <Field>
+                        <FieldLabel htmlFor="date">Date of travel</FieldLabel>
+                        <Input id="date" type='date' name='date' aria-invalid={!!response?.errors?.date} defaultValue={response?.data?.date?.toString()} />
+                        <div id="date-error" aria-live="polite" aria-atomic="true">
+                            {response?.errors?.date &&
+                                response.errors.date.map((error: string) => (
+                                    <p className='text-destructive text-xs mb-4' key={error}>{error}</p>
+                                ))}
+                        </div>
+                    </Field>
+                </FieldGroup>
 
-                <div className='flex flex-row gap-4'>
-                    <div className='w-full space-y-3'>
-                        <Label htmlFor="destination">Destination of travel</Label>
-                        <Input id="destination" type='text' name='destination' aria-invalid={!!response?.errors?.destination} defaultValue={response?.data?.destination} />
-                        <div id="destination-error" aria-live="polite" aria-atomic="true">
+                <FieldGroup className='flex flex-row gap-4'>
+                    <Field className='w-full space-y-0'>
+                        <FieldLabel htmlFor="destination">Destination of travel</FieldLabel>
+                        <Input id="destination"
+                            type='text'
+                            name='destination'
+                            aria-invalid={!!response?.errors?.destination}
+                            defaultValue={response?.data?.destination}
+                            value={cityInput}
+                            onChange={(e) => setCityInput(e.target.value)}
+                            onBlur={handleLocationBlur}
+                            disabled={isLoading}
+                        />
+                        <FieldError id="destination-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.destination &&
                                 response.errors.destination.map((error: string) => (
-                                    <p className='text-destructive text-xs' key={error}>{error}</p>
+                                    <p className='text-destructive text-xs mb-4' key={error}>{error}</p>
                                 ))}
-                        </div>
-                    </div>
+                        </FieldError>
+                    </Field>
 
-                    <div className='w-full space-y-3'>
-                        <Label htmlFor="zip">ZIP of travel</Label>
-                        <Input id="zip" type='text' name='zip' aria-invalid={!!response?.errors?.zip} defaultValue={response?.data?.zip} />
-                        <div id="zip-error" aria-live="polite" aria-atomic="true">
+                    <Field className='w-full space-y-0'>
+                        <FieldLabel htmlFor="zip">ZIP of travel</FieldLabel>
+                        <Input id="zip"
+                            type='text'
+                            name='zip'
+                            aria-invalid={!!response?.errors?.zip}
+                            defaultValue={response?.data?.zip}
+                            value={zipInput}
+                            onChange={(e) => setZipInput(e.target.value)}
+                            onBlur={handleLocationBlur}
+                            disabled={isLoading}
+                        />
+                        <FieldError id="zip-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.zip &&
                                 response.errors.zip.map((error: string) => (
-                                    <p className='text-destructive text-xs' key={error}>{error}</p>
+                                    <p className='text-destructive text-xs mb-4' key={error}>{error}</p>
                                 ))}
-                        </div>
-                    </div>
-                </div>
+                        </FieldError>
+                    </Field>
+                </FieldGroup>
 
-                <div className='flex flex-row gap-4'>
-                    <div className='w-full space-y-3'>
-                        <Label htmlFor="startTime">Start time of travel</Label>
+                <FieldGroup className='flex flex-row gap-4'>
+                    <Field className='w-full space-y-0'>
+                        <FieldLabel htmlFor="startTime">Start time of travel</FieldLabel>
                         <TimeInputWrapper id="startTime" name='startTime' initTime={response?.data?.startTime} isInvalid={!!response?.errors?.startTime} disabled={isPending} />
-                        <div id="startTime-error" aria-live="polite" aria-atomic="true">
+                        <FieldError id="startTime-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.startTime &&
                                 response.errors.startTime.map((error: string) => (
-                                    <p className='text-destructive text-xs' key={error}>{error}</p>
+                                    <p className='text-destructive text-xs mb-4' key={error}>{error}</p>
                                 ))}
-                        </div>
-                    </div>
-                    <div className='w-full space-y-3'>
-                        <Label htmlFor="endTime">End time of travel</Label>
+                        </FieldError>
+                    </Field>
+
+                    <Field className='w-full space-y-0'>
+                        <FieldLabel htmlFor="endTime">End time of travel</FieldLabel>
                         <TimeInputWrapper id="endTime" name='endTime' initTime={response?.data?.endTime} isInvalid={!!response?.errors?.endTime} disabled={isPending} />
-                        <div id="endTime-error" aria-live="polite" aria-atomic="true">
+                        <FieldError id="endTime-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.endTime &&
                                 response.errors.endTime.map((error: string) => (
-                                    <p className='text-destructive text-xs' key={error}>{error}</p>
+                                    <p className='text-destructive text-xs mb-4' key={error}>{error}</p>
                                 ))}
-                        </div>
-                    </div>
-                </div>
+                        </FieldError>
+                    </Field>
+                </FieldGroup>
 
+                <FieldGroup className='flex flex-row gap-4'>
+                    <Field className='w-full space-y-0'>
+                        <FieldLabel htmlFor="distance">Calculated distance</FieldLabel>
+                        <Input id="distance" name='distance' value={routingResult.data?.results[0]?.distance + " meters"} disabled={true} />
+                    </Field>
+
+                    <Field className='w-full space-y-0'>
+                        <FieldLabel htmlFor="ist">Calculated IST</FieldLabel>
+                        <Input id="ist" name='ist' value={data?.results[0]?.lat + ", " + data?.results[0]?.lon} disabled={true} />
+                    </Field>
+                </FieldGroup>
                 {response?.status === 'error' && response?.message && (
-                    <Alert variant='destructive' className='border-0 mt-4'>
+                    <Alert variant='destructive' className='border-0 mt-4 pl-0'>
                         <TriangleAlertIcon />
                         <AlertTitle>{response.message}</AlertTitle>
                     </Alert>
@@ -138,7 +222,9 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
 
                 <DialogFooter className='mt-4 gap-4 sm:justify-end'>
                     <DialogClose asChild>
-                        <Button variant='outline'>Cancel</Button>
+                        <Button variant='outline'>
+                            Cancel
+                        </Button>
                     </DialogClose>
                     <Button type='submit' disabled={isPending} variant='default'>{isPending ? "Adding..." : "Add"}</Button>
                 </DialogFooter>

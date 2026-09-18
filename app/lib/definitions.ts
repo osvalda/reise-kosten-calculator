@@ -17,6 +17,8 @@ export type PreferencesTable = {
   rounding_rule: RoundingTypes;
   currency: 'eur' | 'usd';
   language: 'deutsch' | 'english' | 'magyar';
+  lon: number;
+  lat: number;
 };
 
 export type UserData = {

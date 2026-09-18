@@ -93,6 +93,13 @@ import { editTravel, State, FormResponse } from '@/app/lib/actions';
 import { LoaderCircleIcon } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
+import Image from "next/image";
+import {
+    QueryClientProvider,
+    QueryClient,
+} from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const columns: ColumnDef<TravelsTable>[] = [
     {
@@ -153,7 +160,7 @@ const columns: ColumnDef<TravelsTable>[] = [
     {
         accessorKey: "end time",
         header: "End time",
-        cell: ({ row }) => {return formatDuration(row.original.end_time)}
+        cell: ({ row }) => { return formatDuration(row.original.end_time) }
     },
     {
         accessorKey: "duration",
@@ -303,7 +310,9 @@ export function DataTable({
                                 })}
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <AddModal preferences={preferences.preferences} />
+                    <QueryClientProvider client={queryClient}>
+                        <AddModal preferences={preferences.preferences} />
+                    </QueryClientProvider>
                 </div>
             </div>
             {/* Table body */}
@@ -507,50 +516,12 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                     <Separator />
                 </SheetHeader>
                 <div className="flex flex-col gap-4 overflow-y-auto px-6 text-sm">
-                    {!isMobile && (
-                        <>
-                            <ChartContainer config={chartConfig}>
-                                <AreaChart
-                                    accessibilityLayer
-                                    data={chartData}
-                                    margin={{
-                                        left: 0,
-                                        right: 10,
-                                    }}
-                                >
-                                    <CartesianGrid vertical={false} />
-                                    <XAxis
-                                        dataKey="month"
-                                        tickLine={false}
-                                        axisLine={false}
-                                        tickMargin={8}
-                                        tickFormatter={(value) => value.slice(0, 3)}
-                                        hide
-                                    />
-                                    <ChartTooltip
-                                        cursor={false}
-                                        content={<ChartTooltipContent indicator="dot" />}
-                                    />
-                                    <Area
-                                        dataKey="mobile"
-                                        type="natural"
-                                        fill="var(--color-mobile)"
-                                        fillOpacity={0.6}
-                                        stroke="var(--color-mobile)"
-                                        stackId="a"
-                                    />
-                                    <Area
-                                        dataKey="desktop"
-                                        type="natural"
-                                        fill="var(--color-desktop)"
-                                        fillOpacity={0.4}
-                                        stroke="var(--color-desktop)"
-                                        stackId="a"
-                                    />
-                                </AreaChart>
-                            </ChartContainer>
-                        </>
-                    )}
+                    <Image
+                        src="/login.jpg"
+                        width={250}
+                        height={44}
+                        alt="location image"
+                    />
                     <form id={formId} action={editAction} className="flex flex-col gap-4">
                         <div className="flex flex-col gap-3">
                             <Label htmlFor="date">Date</Label>
