@@ -13,15 +13,9 @@ import {
 } from '@/components/ui/dialog';
 import {
     Field,
-    FieldContent,
-    FieldDescription,
     FieldError,
     FieldGroup,
     FieldLabel,
-    FieldLegend,
-    FieldSeparator,
-    FieldSet,
-    FieldTitle,
 } from "@/components/ui/field"
 import { Button } from "@/components/ui/button";
 import { IconPlus } from "@tabler/icons-react";
@@ -35,22 +29,27 @@ import { TriangleAlertIcon } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
 import { useGeoapifyDataQuery } from '@/hooks/useGeoApifyDataQuery';
-import { GeoapifyApiResponse } from '@/app/lib/types/geoapifyApi.types';
+import { GeoapifyApiParams, GeoapifyApiResponse } from '@/app/lib/types/geoapifyApi.types';
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [open, setOpen] = useState(false);
 
     const [cityInput, setCityInput] = useState('');
     const [zipInput, setZipInput] = useState('');
-    const [locationQuery, setLocationQuery] = useState<{ text: string }>();
+    const [locationQuery, setLocationQuery] = useState<GeoapifyApiParams>();
     const { error, data, isLoading, refetch, isSuccess } = useGeoapifyDataQuery(locationQuery);
     const handleLocationBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             case 'destination':
-                setLocationQuery({ text: cityInput });
+                setLocationQuery({
+                    text: cityInput
+                });
                 break;
             case 'zip':
-                setLocationQuery({ text: zipInput });
+                setLocationQuery({
+                    text: zipInput,
+                    filter: "hu,at,de"
+                });
                 break;
             default:
                 break;
@@ -58,8 +57,8 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     };
     useEffect(() => {
         if (isSuccess) {
-            setZipInput(data?.results[0]?.postcode || '');
-            setCityInput(data?.results[0]?.city || '');
+            setZipInput(data?.results[0]?.postcode || zipInput);
+            setCityInput(data?.results[0]?.city || cityInput);
         }
     }, [isSuccess, data]);
 
