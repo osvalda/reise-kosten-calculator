@@ -34,9 +34,9 @@ export const useGeoapifyDataQuery = (
 const fetchGeoapifyRoutingData = async (
     params?: GeoapifyRoutingApiParams
 ): Promise<GeoapifyRoutingApiResponse> => {
-    const waypointsString = params?.waypoints?.map(([lat, lon]) => `${lat},${lon}`).join('|');
+    const waypointsString = params?.waypoints;
     console.log('Routing waypoints string:', waypointsString);
-    const response = await axios.get<GeoapifyRoutingApiResponse>('/api/routeing', {
+    const response = await axios.get<GeoapifyRoutingApiResponse>('/api/routing', {
         params: { ...params, waypoints: waypointsString },
     });
     return response.data;

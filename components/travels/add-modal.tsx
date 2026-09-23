@@ -61,10 +61,8 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
             setZipInput(data?.results[0]?.postcode || zipInput);
             setCityInput(data?.results[0]?.city || cityInput);
             setRoutingQuery({
-                waypoints: [
-                    [data?.results[0]?.lat || 40, data?.results[0]?.lon || 40],
-                    [preferences.lat || 0, preferences.lon || 0]
-                ]
+                waypoints: "" + (data?.results[0]?.lat + "," + data?.results[0]?.lon + "|" +
+                    preferences.lat + "," + preferences.lon)
             });
         }
     }, [isSuccess, data, zipInput, cityInput, preferences]);

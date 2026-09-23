@@ -22,17 +22,11 @@ export interface GeoapifyRoutingApiResponse {
     }
 }
 
-// Represents a single [lat, lon] pair
-export type GeoCoordinate = [lat: number, lon: number];
-
-// Represents the list of points to be separated by the '|' pipe
-export type WaypointsInput = GeoCoordinate[];
-
 /**
  * Request parameters for the Routing API call
  */
 export interface GeoapifyRoutingApiParams {
-    waypoints: WaypointsInput;
+    waypoints: string;
     mode?: "drive" | "walk" | "bike";
     units?: "metric" | "imperial";
     format?: "json" | "xml";
