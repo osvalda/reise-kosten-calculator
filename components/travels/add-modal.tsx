@@ -112,7 +112,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <span className="hidden lg:inline">Add Travel</span>
             </Button>
         </DialogTrigger>
-        <DialogContent className='sm:max-w-xl'>
+        <DialogContent className='sm:max-w-xl' onOpenAutoFocus={(e) => e.preventDefault()}>
             <form action={formAction}>
                 <DialogHeader className='mb-4'>
                     <DialogTitle>Add Travel Record</DialogTitle>
@@ -208,7 +208,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
 
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="ist">Calculated IST</FieldLabel>
-                        <Input id="ist" name='ist' value={data?.results[0]?.lat + ", " + data?.results[0]?.lon} disabled={true} />
+                        <Input id="ist" name='ist' value={"bela"} disabled={true} />
                     </Field>
                 </FieldGroup>
                 {response?.status === 'error' && response?.message && (
