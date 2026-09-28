@@ -5,20 +5,20 @@ import {
     HandCoinsIcon,
     ClipboardClockIcon
 } from 'lucide-react';
-import {formatCurrency} from '@/app/lib/utils';
+import { formatCurrency } from '@/app/lib/utils';
 
-export default async function CardWrapper() {
+export default async function CardWrapper({ userId }: { userId: string | undefined }) {
     const {
         numberOfTravels,
         roundedDuration,
         totalEarnings
-    } = await fetchCardData();
+    } = await fetchCardData(userId);
 
     return (
         <div className='col-span-full grid gap-6 sm:grid-cols-4 md:max-lg:grid-cols-1'>
 
             <StatisticsCard
-                key={numberOfTravels}
+                key="numOfTravels-{numberOfTravels}"
                 icon={<TruckIcon className='size-4' />}
                 title={numberOfTravels > 1 ? 'Travels' : 'Travel'}
                 value={numberOfTravels.toString()}
@@ -28,7 +28,7 @@ export default async function CardWrapper() {
                 footerDescription='Travels for the last 12 months'
             />
             <StatisticsCard
-                key={totalEarnings}
+                key="totalEarnings-{totalEarnings}"
                 icon={<HandCoinsIcon className='size-4' />}
                 title={'Total revenue'}
                 value={formatCurrency(totalEarnings, 'de-DE', 'EUR')}
@@ -38,17 +38,17 @@ export default async function CardWrapper() {
                 footerDescription='Total brutto revenue for the last 12 months'
             />
             <StatisticsCard
-                key={roundedDuration}
+                key="roundedDuration-{roundedDuration}"
                 icon={<ClipboardClockIcon className='size-4' />}
                 title={'Total Rounded Duration'}
-                value={(roundedDuration/60) + ' h' || '0 h'}
+                value={(roundedDuration / 60) + ' h' || '0 h'}
                 isUpwardTrend={roundedDuration.toString().startsWith('+')}
                 changePercentage={roundedDuration.toString()}
                 footerText='Trending up this month'
                 footerDescription='Spent hours for the last 12 months'
             />
             <StatisticsCard
-                key={444}
+                key="444"
                 icon={<TruckIcon className='size-4' />}
                 title={roundedDuration > 1 ? 'Rounded Duration' : 'Rounded Duration'}
                 value={roundedDuration.toString()}
