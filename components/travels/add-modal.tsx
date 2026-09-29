@@ -38,7 +38,9 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [zipInput, setZipInput] = useState('');
     const [locationQuery, setLocationQuery] = useState<GeoapifyApiParams>();
     const [routingQuery, setRoutingQuery] = useState<GeoapifyRoutingApiParams>();
-    const { error, data, isLoading, refetch, isSuccess } = useGeoapifyDataQuery(locationQuery);
+    const { data, isLoading, isSuccess, isError } = useGeoapifyDataQuery(locationQuery);
+    const routingResult = useGeoapifyRoutingDataQuery(routingQuery);
+
     const handleLocationBlur = async (event: React.FocusEvent<HTMLInputElement>) => {
         switch (event.target.name) {
             case 'destination':
@@ -56,6 +58,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 break;
         }
     };
+
     useEffect(() => {
         if (isSuccess) {
             setZipInput(data?.results[0]?.postcode || zipInput);
@@ -64,10 +67,16 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 waypoints: "" + (data?.results[0]?.lat + "," + data?.results[0]?.lon + "|" +
                     preferences.lat + "," + preferences.lon)
             });
+            setLocationQuery(undefined);
+        } if (routingResult.isError) {
+            toast.error("Error fetching location data. Please check your input.");
+            setCityInput('');
+            setZipInput('');
+            setLocationQuery(undefined);
+            setRoutingQuery(undefined);
         }
-    }, [isSuccess, data, zipInput, cityInput, preferences]);
+    }, [isSuccess, data, zipInput, cityInput, preferences, routingResult]);
 
-    const routingResult = useGeoapifyRoutingDataQuery(routingQuery);
 
     const initialState: State = { message: null, errors: {} };
     const [response, formAction, isPending] = useActionState(
@@ -99,6 +108,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
             queueMicrotask(() => {
                 toast.success(response.message || 'Travel record created successfully.');
             });
+            reset();
         }
     }, [response]);
 
@@ -136,7 +146,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                     </Field>
                 </FieldGroup>
 
-                <FieldGroup className='flex flex-row gap-4'>
+                <FieldGroup className='flex flex-row gap-4 mb-2'>
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="destination">Destination of travel</FieldLabel>
                         <Input id="destination"
@@ -147,7 +157,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                             value={cityInput}
                             onChange={(e) => setCityInput(e.target.value)}
                             onBlur={handleLocationBlur}
-                            disabled={isLoading}
+                            disabled={isLoading || routingResult.isLoading}
                         />
                         <FieldError id="destination-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.destination &&
@@ -167,7 +177,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                             value={zipInput}
                             onChange={(e) => setZipInput(e.target.value)}
                             onBlur={handleLocationBlur}
-                            disabled={isLoading}
+                            disabled={isLoading || routingResult.isLoading}
                         />
                         <FieldError id="zip-error" aria-live="polite" aria-atomic="true">
                             {response?.errors?.zip &&
@@ -178,7 +188,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                     </Field>
                 </FieldGroup>
 
-                <FieldGroup className='flex flex-row gap-4'>
+                <FieldGroup className='flex flex-row gap-4  mb-2'>
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="startTime">Start time of travel</FieldLabel>
                         <TimeInputWrapper id="startTime" name='startTime' initTime={response?.data?.startTime} isInvalid={!!response?.errors?.startTime} disabled={isPending} />
@@ -205,7 +215,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <FieldGroup className='flex flex-row gap-4'>
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="distance">Calculated distance</FieldLabel>
-                        <Input id="distance" name='distance' value={routingResult.data?.results[0]?.distance + " meters"} disabled={true} />
+                        <Input id="distance" name='distance' value={routingResult.data?.results[0]?.distance ? routingResult.data?.results[0]?.distance / 1000 + " Km" : ""} disabled={true} />
                     </Field>
 
                     <Field className='w-full space-y-0'>

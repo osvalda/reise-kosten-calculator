@@ -39,7 +39,10 @@ const fetchGeoapifyRoutingData = async (
     const response = await axios.get<GeoapifyRoutingApiResponse>('/api/routing', {
         params: { ...params, waypoints: waypointsString },
     });
-    return response.data;
+    if (response.status === 200) {
+        return response.data;
+    }
+    throw new Error('Failed to fetch routing data');
 };
 
 export const useGeoapifyRoutingDataQuery = (
