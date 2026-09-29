@@ -88,6 +88,8 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         });
         setCityInput('');
         setZipInput('');
+        setLocationQuery(undefined);
+        setRoutingQuery(undefined);
     };
 
     useEffect(() => {
