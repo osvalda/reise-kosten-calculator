@@ -118,11 +118,11 @@ export async function fetchTravelById(id: string) {
 
 /******* Dashboard Card Data Fetching Function *********/
 
-export async function fetchCardData() {
+export async function fetchCardData(userId: string) {
   try {
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM travels;`;
-    const roundedDurationPromise = sql`SELECT SUM(rounded_duration) FROM travels;`;
-    const summUpEarnings = sql`SELECT SUM(daily_amount) FROM travels;`;
+    const invoiceCountPromise = sql`SELECT COUNT(*) FROM travels WHERE user_id::text = ${userId};`;
+    const roundedDurationPromise = sql`SELECT SUM(rounded_duration) FROM travels WHERE user_id::text = ${userId};`;
+    const summUpEarnings = sql`SELECT SUM(daily_amount) FROM travels WHERE user_id::text = ${userId};`;
 
     const data = await Promise.all([
       invoiceCountPromise,
