@@ -1,12 +1,14 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios';
 import { env } from '../config/env';
 import {
-    GeoapifyApiResponse,
     GeoapifyApiParams,
     ApiResult,
     GeoapifyRoutingApiResponse,
     GeoapifyRoutingApiParams,
+    LocationResult,
+    LocationResponse,
 } from '../types/geoapifyApi.types';
+import { LocationResponseSchema } from '../types/geoapifyApi.types';
 
 /**
  * Creates a configured Axios instance for the Geoapify API
@@ -60,12 +62,12 @@ const externalApiClient = createGeoApifyApiClient();
  */
 export const fetchGeoapifyData = async (
     params?: GeoapifyApiParams
-): Promise<ApiResult<GeoapifyApiResponse[]>> => {
+): Promise<ApiResult<LocationResult>> => {
     try {
         const config: AxiosRequestConfig = {
             params: {
                 text: params?.text,
-                limit: params?.limit ?? 10,
+                limit: params?.limit ?? 1,
                 type: params?.type ?? 'city',
                 format: params?.format ?? 'json',
                 filter: params?.filter,
@@ -76,13 +78,21 @@ export const fetchGeoapifyData = async (
             throw new Error('The \'text\' parameter is required for the Geoapify API request.');
         }
 
-        const response = await externalApiClient.get<GeoapifyApiResponse[]>(
+        const response = await externalApiClient.get<LocationResponse[]>(
             '/geocode/search',
             config
         );
 
+        const result = LocationResponseSchema.safeParse(response.data);
+
+
+        if (!result.success) {
+            console.error('[Geoapify API] Validation error:', result.error);
+             throw new Error('Invalid response format from Geoapify API');
+        }
+
         return {
-            data: response.data,
+            data: result.data?.results[0] || null,
             error: null,
             success: true,
         };

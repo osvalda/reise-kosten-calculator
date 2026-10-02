@@ -29,7 +29,7 @@ import { TriangleAlertIcon } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
 import { useGeoapifyDataQuery, useGeoapifyRoutingDataQuery } from '@/hooks/useGeoApifyDataQuery';
-import { GeoapifyApiParams, GeoapifyApiResponse, GeoapifyRoutingApiParams } from '@/app/lib/types/geoapifyApi.types';
+import { GeoapifyApiParams, GeoapifyRoutingApiParams } from '@/app/lib/types/geoapifyApi.types';
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [open, setOpen] = useState(false);
@@ -61,10 +61,10 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
 
     useEffect(() => {
         if (isSuccess) {
-            setZipInput(data?.results[0]?.postcode || zipInput);
-            setCityInput(data?.results[0]?.city || cityInput);
+            setZipInput(data?.postcode || zipInput);
+            setCityInput(data?.city || cityInput);
             setRoutingQuery({
-                waypoints: "" + (data?.results[0]?.lat + "," + data?.results[0]?.lon + "|" +
+                waypoints: "" + (data?.lat + "," + data?.lon + "|" +
                     preferences.lat + "," + preferences.lon)
             });
             setLocationQuery(undefined);

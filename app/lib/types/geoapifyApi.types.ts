@@ -1,15 +1,4 @@
-export interface GeoapifyApiResponse {
-    results: [{
-        lat: number;
-        lon: number;
-        postcode: string;
-        city: string;
-    }],
-    query: {
-        text: string;
-        limit: number;
-    }
-}
+import { z } from 'zod';
 
 export interface GeoapifyRoutingApiResponse {
     results: [{
@@ -21,6 +10,22 @@ export interface GeoapifyRoutingApiResponse {
         limit: number;
     }
 }
+
+export const LocationResultSchema = z.object({
+    city: z.string(),
+    postcode: z.string(),
+    lon: z.number(),
+    lat: z.number(),
+});
+
+// Schema for the full API response
+export const LocationResponseSchema = z.object({
+    results: z.array(LocationResultSchema),
+});
+
+// Infer types
+export type LocationResult = z.infer<typeof LocationResultSchema>;
+export type LocationResponse = z.infer<typeof LocationResponseSchema>;
 
 /**
  * Request parameters for the Routing API call
@@ -50,14 +55,4 @@ export interface ApiResult<T> {
     data: T | null;
     error: string | null;
     success: boolean;
-}
-
-/**
- * Hook return type for consistent typing
- */
-export interface UseGeoapifyDataReturn {
-    data: GeoapifyApiResponse[] | null;
-    isLoading: boolean;
-    error: string | null;
-    refetch: () => Promise<void>;
 }
