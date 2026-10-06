@@ -3,10 +3,12 @@ import { env } from '../config/env';
 import {
     GeoapifyApiParams,
     ApiResult,
-    GeoapifyRoutingApiResponse,
     GeoapifyRoutingApiParams,
     LocationResult,
     LocationResponse,
+    RoutingResult,
+    RoutingResponseSchema,
+    RoutingResponse,
 } from '../types/geoapifyApi.types';
 import { LocationResponseSchema } from '../types/geoapifyApi.types';
 
@@ -56,7 +58,7 @@ const createGeoApifyApiClient = (): AxiosInstance => {
 const externalApiClient = createGeoApifyApiClient();
 
 /**
- * Fetches data from the Geoapify DB
+ * Fetches location data from the Geoapify DB
  * @param params - Query parameters for the request
  * @returns Promise with typed API result
  */
@@ -119,7 +121,7 @@ export const fetchGeoapifyData = async (
 */
 export const fetchRoutingData = async (
     params?: GeoapifyRoutingApiParams
-): Promise<ApiResult<GeoapifyRoutingApiResponse[]>> => {
+): Promise<ApiResult<RoutingResult>> => {
     try {
         const config: AxiosRequestConfig = {
             params: {
@@ -135,13 +137,20 @@ export const fetchRoutingData = async (
             throw new Error('The \'waypoints\' parameter is required for the Geoapify Routing API request.');
         }
 
-        const response = await externalApiClient.get<GeoapifyRoutingApiResponse[]>(
+        const response = await externalApiClient.get<RoutingResponse[]>(
             '/routing',
             config
         );
 
+        const result = RoutingResponseSchema.safeParse(response.data);
+
+        if (!result.success) {
+            console.error('[Geoapify Routing API] Validation error:', result.error);
+            throw new Error('Invalid response format from Geoapify Routing API');
+        }
+
         return {
-            data: response.data,
+            data: result.data?.results[0] || null,
             error: null,
             success: true,
         };

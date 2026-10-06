@@ -4,9 +4,9 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import axios from 'axios';
 import {
     GeoapifyApiParams,
-    GeoapifyRoutingApiResponse,
     GeoapifyRoutingApiParams,
     LocationResult,
+    RoutingResult,
 } from '../app/lib/types/geoapifyApi.types';
 
 const fetchGeoapifyData = async (
@@ -33,10 +33,10 @@ export const useGeoapifyDataQuery = (
 
 const fetchGeoapifyRoutingData = async (
     params?: GeoapifyRoutingApiParams
-): Promise<GeoapifyRoutingApiResponse> => {
+): Promise<RoutingResult> => {
     const waypointsString = params?.waypoints;
     console.log('Routing waypoints string:', waypointsString);
-    const response = await axios.get<GeoapifyRoutingApiResponse>('/api/routing', {
+    const response = await axios.get<RoutingResult>('/api/routing', {
         params: { ...params, waypoints: waypointsString },
     });
     if (response.status === 200) {
@@ -47,7 +47,7 @@ const fetchGeoapifyRoutingData = async (
 
 export const useGeoapifyRoutingDataQuery = (
     params?: GeoapifyRoutingApiParams
-): UseQueryResult<GeoapifyRoutingApiResponse, Error> => {
+): UseQueryResult<RoutingResult, Error> => {
     return useQuery({
         queryKey: ['geoapifyRoutingData', params],
         queryFn: () => fetchGeoapifyRoutingData(params),

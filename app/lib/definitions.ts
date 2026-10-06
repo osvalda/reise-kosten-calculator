@@ -19,6 +19,9 @@ export type PreferencesTable = {
   language: 'deutsch' | 'english' | 'magyar';
   lon: number;
   lat: number;
+  min_distance: number;
+  max_daily_hour: number;
+  pref_country: string;
 };
 
 export type UserData = {

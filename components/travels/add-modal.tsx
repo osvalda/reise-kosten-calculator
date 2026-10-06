@@ -215,7 +215,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <FieldGroup className='flex flex-row gap-4'>
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="distance">Calculated distance</FieldLabel>
-                        <Input id="distance" name='distance' value={routingResult.data?.results[0]?.distance ? routingResult.data?.results[0]?.distance / 1000 + " Km" : ""} disabled={true} />
+                        <Input id="distance" name='distance' value={routingResult.data?.distance ? routingResult.data.distance / 1000 + " Km" : ""} disabled={true} />
                     </Field>
 
                     <Field className='w-full space-y-0'>
@@ -227,6 +227,12 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                     <Alert variant='destructive' className='border-0 mt-4 pl-0'>
                         <TriangleAlertIcon />
                         <AlertTitle>{response.message}</AlertTitle>
+                    </Alert>
+                )}
+                {!routingResult.isError && routingResult.data?.distance && routingResult.data.distance < preferences.min_distance && (
+                    <Alert variant='destructive' className='border-0 mt-4 pl-0'>
+                        <TriangleAlertIcon />
+                        <AlertTitle>Tul kozel van!!!</AlertTitle>
                     </Alert>
                 )}
 

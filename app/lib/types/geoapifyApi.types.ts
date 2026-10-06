@@ -1,24 +1,21 @@
 import { z } from 'zod';
 
-export interface GeoapifyRoutingApiResponse {
-    results: [{
-        distance: number;
-        distance_units: string;
-    }],
-    query: {
-        text: string;
-        limit: number;
-    }
-}
+const RoutingResultSchema = z.object({
+    distance: z.number(),
+    distance_units: z.string(),
+});
 
-export const LocationResultSchema = z.object({
+export const RoutingResponseSchema = z.object({
+    results: z.array(RoutingResultSchema)
+});
+
+const LocationResultSchema = z.object({
     city: z.string(),
     postcode: z.string(),
     lon: z.number(),
     lat: z.number(),
 });
 
-// Schema for the full API response
 export const LocationResponseSchema = z.object({
     results: z.array(LocationResultSchema),
 });
@@ -26,6 +23,8 @@ export const LocationResponseSchema = z.object({
 // Infer types
 export type LocationResult = z.infer<typeof LocationResultSchema>;
 export type LocationResponse = z.infer<typeof LocationResponseSchema>;
+export type RoutingResult = z.infer<typeof RoutingResultSchema>;
+export type RoutingResponse = z.infer<typeof RoutingResponseSchema>;
 
 /**
  * Request parameters for the Routing API call
