@@ -87,10 +87,9 @@ export const fetchGeoapifyData = async (
 
         const result = LocationResponseSchema.safeParse(response.data);
 
-
         if (!result.success) {
             console.error('[Geoapify API] Validation error:', result.error);
-             throw new Error('Invalid response format from Geoapify API');
+            throw new Error('Invalid response format from Geoapify API');
         }
 
         return {

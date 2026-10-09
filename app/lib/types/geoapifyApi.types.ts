@@ -11,7 +11,7 @@ export const RoutingResponseSchema = z.object({
 
 const LocationResultSchema = z.object({
     city: z.string(),
-    postcode: z.string(),
+    postcode: z.optional(z.string()),
     lon: z.number(),
     lat: z.number(),
 });
