@@ -64,7 +64,7 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
     response.status = 'error';
     response.errors = validatedFields.error.flatten().fieldErrors;
     response.keepOpen = true;
-    response.message = 'Missing Fields. Failed to Create Travel.';
+    response.message = 'The form cannot be submitted due to missing or invalid data.';
     response.data = data as unknown as FormSchemaType;
     return response;
   }
