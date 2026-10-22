@@ -1,7 +1,6 @@
 import { SmartTimeInput } from '@osvalda/smart-time-input';
-import { FocusEventHandler } from 'react';
 
-export default function TimeInputWrapper({ id, name, initTime, isInvalid, disabled, setter }: { id: string; name: string; initTime: string | undefined; isInvalid: boolean; disabled: boolean; setter: (time: string) => void; }) {
+export default function TimeInputWrapper({ id, name, initTime, isInvalid, disabled, setter }: { id: string; name: string; initTime: string | undefined; isInvalid: boolean; disabled: boolean; setter?: (time: string) => void; }) {
     return (<SmartTimeInput
         id={id}
         name={name}

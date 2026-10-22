@@ -80,9 +80,9 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
   const dailyAmount = calculateDailyEarning(duration, preferences.daily_fee, preferences.rounding_rule);
 
   try {
-    await sql`
+    await sql `
         INSERT INTO travels (user_id, destination, date, start_time, end_time, duration, rounded_duration, daily_amount, zip)
-        VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTimeInMinutes}, ${endTimeInMinutes}, ${duration}, ${roundedDuration}, ${dailyAmount}, ${zip})
+        VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTimeInMinutes}, ${endTimeInMinutes}, ${duration}, ${roundedDuration}, ${dailyAmount}, ${zip ?? null})
       `;
   } catch (error) {
     console.error('Create Error:', error);
@@ -131,7 +131,7 @@ export async function editTravel(id: string, preferences: PreferencesTable, prev
       UPDATE travels
       SET user_id = ${preferences.user_id}, destination = ${destination}, date = ${date}, start_time = ${startTimeInMinutes},
       end_time = ${endTimeInMinutes}, duration = ${duration}, rounded_duration = ${roundedDuration}, daily_amount = ${dailyAmount},
-      zip = ${zip}
+      zip = ${zip ?? null}
       WHERE id = ${id}
     `;
   } catch (error) {
