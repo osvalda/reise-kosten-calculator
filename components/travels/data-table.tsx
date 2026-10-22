@@ -90,7 +90,7 @@ import {
 } from '@/components/ui/dialog';
 import { deleteTravel } from "@/app/lib/actions";
 import { editTravel, State, FormResponse } from '@/app/lib/actions';
-import { LoaderCircleIcon } from 'lucide-react';
+import { LoaderCircleIcon, ClockArrowUp, ClockArrowDown } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
 import Image from "next/image";
@@ -560,7 +560,14 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
                                 <Label htmlFor="startTime">Start Time</Label>
-                                <TimeInputWrapper id="startTime" name='startTime' isInvalid={!!response?.errors?.startTime} initTime={response?.data?.startTime || formatDuration(item.start_time)} disabled={isPending} />
+                                <TimeInputWrapper
+                                    id="startTime"
+                                    name='startTime'
+                                    isInvalid={!!response?.errors?.startTime}
+                                    initTime={response?.data?.startTime || formatDuration(item.start_time)}
+                                    disabled={isPending}
+                                    icon={<ClockArrowUp />}
+                                />
                                 <div id="startTime-error" aria-live="polite" aria-atomic="true">
                                     {response?.errors?.startTime &&
                                         response.errors.startTime.map((error: string) => (
@@ -570,7 +577,14 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                             </div>
                             <div className="flex flex-col gap-3">
                                 <Label htmlFor="endTime">End Time</Label>
-                                <TimeInputWrapper id="endTime" name='endTime' isInvalid={!!response?.errors?.endTime} initTime={response?.data?.endTime || formatDuration(item.end_time)} disabled={isPending} />
+                                <TimeInputWrapper
+                                    id="endTime"
+                                    name='endTime'
+                                    isInvalid={!!response?.errors?.endTime}
+                                    initTime={response?.data?.endTime || formatDuration(item.end_time)}
+                                    disabled={isPending}
+                                    icon={<ClockArrowDown />}
+                                />
                                 <div id="endTime-error" aria-live="polite" aria-atomic="true">
                                     {response?.errors?.endTime &&
                                         response.errors.endTime.map((error: string) => (
