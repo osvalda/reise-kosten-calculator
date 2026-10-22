@@ -13,10 +13,12 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 const FormSchema = z.object({
   id: z.string(),
   destination: z.string().min(3, { message: "Please provide a destination." }),
-  zip: z.string().min(4, { message: "Please provide a ZIP." }),
-  date: z.coerce.date({
-    // invalid_type_error: 'Please provide date of travel.',
-  }),
+  zip: z.union([
+    z.literal(""),
+    z.undefined(),
+    z.string().min(4, { message: "Please provide a valid ZIP." }).max(20)
+  ]),
+  date: z.coerce.date({ message: 'Please provide date of travel.' }),
   startTime: z.string().min(5, { message: "Please provide start time." }),
   endTime: z.string().min(5, { message: "Please provide end time." }),
 });

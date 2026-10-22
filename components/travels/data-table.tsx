@@ -147,9 +147,11 @@ const columns: ColumnDef<TravelsTable>[] = [
         accessorKey: "zip",
         header: "Zip Code",
         cell: ({ row }) => (
-            <Badge variant="outline" className="px-1.5 text-muted-foreground">
-                <IconCurrentLocation /> {row.original.zip}
-            </Badge>
+            row.original.zip ?
+                <Badge variant="outline" className="px-1.5 text-muted-foreground">
+                    <IconCurrentLocation /> {row.original.zip}
+                </Badge>
+                : null
         ),
     },
     {
