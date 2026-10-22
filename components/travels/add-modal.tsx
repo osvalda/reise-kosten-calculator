@@ -20,13 +20,13 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { IconPlus } from "@tabler/icons-react";
-import { createTravel, State, FormResponse } from '@/app/lib/actions';
+import { createTravel, FormResponse } from '@/app/lib/actions';
 import { useActionState, useTransition } from 'react';
 import { PreferencesTable } from '@/app/lib/definitions';
 import { Input } from '@/components/ui/input';
 import { useState, useEffect } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { TriangleAlertIcon } from 'lucide-react';
+import { TriangleAlertIcon, MapPin, Crosshair, ClockArrowUp, ClockArrowDown } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
 import { useGeoapifyDataQuery, useGeoapifyRoutingDataQuery } from '@/hooks/useGeoApifyDataQuery';
@@ -34,6 +34,7 @@ import { GeoapifyApiParams, GeoapifyRoutingApiParams } from '@/app/lib/types/geo
 import { Switch } from '../ui/switch';
 import { RiInformation2Line } from "@remixicon/react";
 import { useIstCalc } from '@/hooks/useIstCalc';
+import { InputGroup, InputGroupInput, InputGroupAddon } from '../ui/input-group';
 
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [open, setOpen] = useState(false);
@@ -168,30 +169,42 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 <FieldGroup className='flex flex-row gap-4 mb-2'>
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="destination">Destination of travel</FieldLabel>
-                        <Input id="destination"
-                            type='text'
-                            name='destination'
-                            aria-invalid={!!response?.errors?.destination}
-                            defaultValue={response?.data?.destination}
-                            value={cityInput}
-                            onChange={(e) => setCityInput(e.target.value)}
-                            onBlur={handleLocationBlur}
-                            disabled={geoResult.isLoading || routingResult.isLoading}
-                        />
+                        <InputGroup>
+                            <InputGroupInput
+                                id="destination"
+                                type='text'
+                                name='destination'
+                                aria-invalid={!!response?.errors?.destination}
+                                defaultValue={response?.data?.destination}
+                                value={cityInput}
+                                onChange={(e) => setCityInput(e.target.value)}
+                                onBlur={handleLocationBlur}
+                                disabled={geoResult.isLoading || routingResult.isLoading}
+                            />
+                            <InputGroupAddon align="inline-end">
+                                <MapPin />
+                            </InputGroupAddon>
+                        </InputGroup>
                     </Field>
 
                     <Field className='w-full space-y-0'>
                         <FieldLabel htmlFor="zip">ZIP of travel</FieldLabel>
-                        <Input id="zip"
-                            type='text'
-                            name='zip'
-                            aria-invalid={!!response?.errors?.zip}
-                            defaultValue={response?.data?.zip}
-                            value={zipInput}
-                            onChange={(e) => setZipInput(e.target.value)}
-                            onBlur={handleLocationBlur}
-                            disabled={geoResult.isLoading || routingResult.isLoading}
-                        />
+                        <InputGroup>
+                            <InputGroupInput
+                                id="zip"
+                                type='text'
+                                name='zip'
+                                aria-invalid={!!response?.errors?.zip}
+                                defaultValue={response?.data?.zip}
+                                value={zipInput}
+                                onChange={(e) => setZipInput(e.target.value)}
+                                onBlur={handleLocationBlur}
+                                disabled={geoResult.isLoading || routingResult.isLoading}
+                            />
+                            <InputGroupAddon align="inline-end">
+                                <Crosshair />
+                            </InputGroupAddon>
+                        </InputGroup>
                     </Field>
                 </FieldGroup>
 
@@ -204,7 +217,9 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                             initTime={response?.data?.startTime}
                             isInvalid={!!response?.errors?.startTime}
                             setter={setStartTime}
-                            disabled={isPending} />
+                            disabled={isPending}
+                            icon={<ClockArrowUp />}
+                        />
                     </Field>
 
                     <Field className='w-full space-y-0'>
@@ -215,7 +230,9 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                             initTime={response?.data?.endTime}
                             isInvalid={!!response?.errors?.endTime}
                             setter={setEndTime}
-                            disabled={isPending} />
+                            disabled={isPending}
+                            icon={<ClockArrowDown />}
+                        />
                     </Field>
                 </FieldGroup>
 
