@@ -1,6 +1,7 @@
 export type User = {
   id: string;
   name: string;
+  first_name: string;
   email: string;
   password: string;
   image_url: string;
@@ -17,6 +18,11 @@ export type PreferencesTable = {
   rounding_rule: RoundingTypes;
   currency: 'eur' | 'usd';
   language: 'deutsch' | 'english' | 'magyar';
+  lon: number;
+  lat: number;
+  min_distance: number;
+  max_daily_hour: number;
+  pref_country: string;
 };
 
 export type UserData = {

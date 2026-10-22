@@ -13,10 +13,12 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 const FormSchema = z.object({
   id: z.string(),
   destination: z.string().min(3, { message: "Please provide a destination." }),
-  zip: z.string().min(4, { message: "Please provide a ZIP." }),
-  date: z.coerce.date({
-    // invalid_type_error: 'Please provide date of travel.',
-  }),
+  zip: z.union([
+    z.literal(""),
+    z.undefined(),
+    z.string().min(4, { message: "Please provide a valid ZIP." }).max(20)
+  ]),
+  date: z.coerce.date({ message: 'Please provide date of travel.' }),
   startTime: z.string().min(5, { message: "Please provide start time." }),
   endTime: z.string().min(5, { message: "Please provide end time." }),
 });
@@ -64,7 +66,7 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
     response.status = 'error';
     response.errors = validatedFields.error.flatten().fieldErrors;
     response.keepOpen = true;
-    response.message = 'Missing Fields. Failed to Create Travel.';
+    response.message = 'The form cannot be submitted due to missing or invalid data.';
     response.data = data as unknown as FormSchemaType;
     return response;
   }
@@ -78,9 +80,9 @@ export async function createTravel(preferences: PreferencesTable, prevState: Sta
   const dailyAmount = calculateDailyEarning(duration, preferences.daily_fee, preferences.rounding_rule);
 
   try {
-    await sql`
+    await sql `
         INSERT INTO travels (user_id, destination, date, start_time, end_time, duration, rounded_duration, daily_amount, zip)
-        VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTimeInMinutes}, ${endTimeInMinutes}, ${duration}, ${roundedDuration}, ${dailyAmount}, ${zip})
+        VALUES (${preferences.user_id}, ${destination}, ${date}, ${startTimeInMinutes}, ${endTimeInMinutes}, ${duration}, ${roundedDuration}, ${dailyAmount}, ${zip ?? null})
       `;
   } catch (error) {
     console.error('Create Error:', error);
@@ -129,7 +131,7 @@ export async function editTravel(id: string, preferences: PreferencesTable, prev
       UPDATE travels
       SET user_id = ${preferences.user_id}, destination = ${destination}, date = ${date}, start_time = ${startTimeInMinutes},
       end_time = ${endTimeInMinutes}, duration = ${duration}, rounded_duration = ${roundedDuration}, daily_amount = ${dailyAmount},
-      zip = ${zip}
+      zip = ${zip ?? null}
       WHERE id = ${id}
     `;
   } catch (error) {
