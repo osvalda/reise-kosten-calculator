@@ -35,7 +35,6 @@ const fetchGeoapifyRoutingData = async (
     params?: GeoapifyRoutingApiParams
 ): Promise<RoutingResult> => {
     const waypointsString = params?.waypoints;
-    console.log('Routing waypoints string:', waypointsString);
     const response = await axios.get<RoutingResult>('/api/routing', {
         params: { ...params, waypoints: waypointsString },
     });

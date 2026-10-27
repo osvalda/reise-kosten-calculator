@@ -36,6 +36,17 @@ import { RiInformation2Line } from "@remixicon/react";
 import { useIstCalc } from '@/hooks/useIstCalc';
 import { InputGroup, InputGroupInput, InputGroupAddon } from '../ui/input-group';
 
+import { ChevronRightIcon, StarIcon, EraserIcon } from "lucide-react"
+import {
+    Item,
+    ItemContent,
+    ItemDescription,
+    ItemGroup,
+    ItemMedia,
+    ItemTitle,
+} from "@/components/ui/item"
+import { Card, CardDescription, CardHeader, CardTitle } from '../ui/card';
+
 export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     const [open, setOpen] = useState(false);
     const [detailsOpen, setDetailsOpen] = useState(true);
@@ -62,6 +73,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
             case 'zip':
                 setLocationQuery({
                     text: zipInput,
+                    //TODO: get list from user preferences and set filter accordingly
                     filter: "hu,at,de"
                 });
                 break;
@@ -70,6 +82,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         }
     };
 
+    //TODO: refactor this useEffect: too much dependencies
     useEffect(() => {
         if (geoResult.isSuccess) {
             setZipInput(geoResult.data?.postcode || "");
@@ -88,8 +101,9 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
             setLocationQuery(undefined);
             setRoutingQuery(undefined);
         }
-    }, [geoResult.isSuccess, geoResult.data, zipInput, cityInput, preferences, routingResult, detailsOpen]);
+    }, [geoResult.isSuccess, geoResult.data, cityInput, preferences, routingResult, detailsOpen]);
 
+    const [, startTransition] = useTransition();
     const reset = () => {
         startTransition(() => {
             formAction(null);
@@ -102,7 +116,6 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
         setEndTime('');
     };
 
-    const [, startTransition] = useTransition();
     const [response, formAction, isPending] = useActionState(
         async (response: FormResponse | undefined, payload: FormData | null) => {
             if (payload === null) {
@@ -117,13 +130,13 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     useEffect(() => {
         if (response) {
             setOpen(response.keepOpen);
-        } if (response && response.status === 'success' && !response.keepOpen) {
-            queueMicrotask(() => {
-                toast.success(response.message || 'Travel record created successfully.');
-            });
+            if (response.status === 'success' && !response.keepOpen) {
+                queueMicrotask(() => {
+                    toast.success(response.message || 'Travel record created successfully.');
+                });
+            }
         }
     }, [response]);
-
 
     return <Dialog modal open={open} onOpenChange={(open) => {
         setOpen(open);
@@ -158,6 +171,52 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                         </Alert>
                     )}
                 </div>
+                <Card className="w-full max-h-md gap-2">
+                    <CardHeader>
+                        <CardTitle>Quick selection</CardTitle>
+                        <CardDescription>
+                            Select a common destination or ZIP code from the list below to quickly fill in the form.
+                        </CardDescription>
+                    </CardHeader>
+                    <ItemGroup className="flex flex-row gap-4 mb-2 p-2">
+                        <Item variant="outline" size="sm" asChild>
+                            <a href="#">
+                                <ItemMedia>
+                                    <ChevronRightIcon className="size-5" />
+                                </ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle>Last visited</ItemTitle>
+                                    <ItemDescription>
+                                        Sorokpolany, 9773
+                                    </ItemDescription>
+                                </ItemContent>
+                            </a>
+                        </Item>
+                        <Item variant="outline" size="sm" asChild>
+                            <a href="#">
+                                <ItemMedia>
+                                    <StarIcon className="size-5" />
+                                </ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle>Most visited</ItemTitle>
+                                    <ItemDescription>
+                                        Berlin, 10115
+                                    </ItemDescription>
+                                </ItemContent>
+                            </a>
+                        </Item>
+                        <Item variant="outline" size="sm" asChild>
+                            <a href="#">
+                                <ItemMedia>
+                                    <EraserIcon className="size-5" />
+                                </ItemMedia>
+                                <ItemContent>
+                                    <ItemTitle>Erease inputs</ItemTitle>
+                                </ItemContent>
+                            </a>
+                        </Item>
+                    </ItemGroup>
+                </Card>
 
                 <FieldGroup className='w-full mb-2'>
                     <Field>
@@ -291,5 +350,5 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                 </DialogFooter>
             </form>
         </DialogContent>
-    </Dialog>;
+    </Dialog >;
 }
