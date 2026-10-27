@@ -15,7 +15,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             params.filter = searchParams.get('filter') ?? "";
         }
 
-        // Call the server-side API client
         const result = await fetchGeoapifyData(params);
 
         if (!result.success) {

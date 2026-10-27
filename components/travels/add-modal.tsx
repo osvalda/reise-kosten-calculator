@@ -249,7 +249,6 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                                 type='text'
                                 name='destination'
                                 aria-invalid={!!response?.errors?.destination}
-                                defaultValue={response?.data?.destination}
                                 value={cityInput}
                                 onChange={(e) => setCityInput(e.target.value)}
                                 onBlur={handleLocationBlur}
@@ -269,7 +268,6 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                                 type='text'
                                 name='zip'
                                 aria-invalid={!!response?.errors?.zip}
-                                defaultValue={response?.data?.zip}
                                 value={zipInput}
                                 onChange={(e) => setZipInput(e.target.value)}
                                 onBlur={handleLocationBlur}
