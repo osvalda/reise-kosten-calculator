@@ -317,7 +317,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                                     <HoverCardTrigger className='cursor-pointer pl-1'>
                                         <RiInformation2Line size={16} className='inline-block' />
                                     </HoverCardTrigger>
-                                    <HoverCardContent>Content</HoverCardContent>
+                                    <HoverCardContent>Here you can find the calculated details for your travel. Yellow warnings will be displayed if the calculated values are outside the acceptable range.</HoverCardContent>
                                 </HoverCard>
                             </span>
                             <Separator className='flex-1' />
@@ -359,7 +359,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                             Cancel
                         </Button>
                     </DialogClose>
-                    <Button type='submit' disabled={isPending} variant='default'>{isPending ? "Adding Record..." : "Add travel Record"}</Button>
+                    <Button type='submit' disabled={isPending} variant='default'>{isPending ? "Adding Record..." : "Add travel"}</Button>
                 </DialogFooter>
             </form>
         </DialogContent>
