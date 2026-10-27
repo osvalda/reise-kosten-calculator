@@ -104,10 +104,12 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
     }, [geoResult.isSuccess, geoResult.data, cityInput, preferences, routingResult, detailsOpen]);
 
     const [, startTransition] = useTransition();
-    const reset = () => {
-        startTransition(() => {
-            formAction(null);
-        });
+    const reset = (isResetForm?: boolean) => {
+        if (isResetForm) {
+            startTransition(() => {
+                formAction(null);
+            });
+        }
         setCityInput('');
         setZipInput('');
         setLocationQuery(undefined);
@@ -140,7 +142,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
 
     return <Dialog modal open={open} onOpenChange={(open) => {
         setOpen(open);
-        reset();
+        reset(true);
     }}>
         <DialogTrigger asChild>
             <Button variant="default">
@@ -157,71 +159,84 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className='flex flex-col gap-0 mb-2'>
-                    {response?.status === 'error' && response?.message && (
-                        <Alert variant='destructive' className="border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50">
-                            <TriangleAlertIcon />
-                            <AlertTitle>Review required</AlertTitle>
-                            <AlertDescription>
-                                {response.message}
-                                {Object.values(response?.errors || {}).flat().map((error: string, index: number) => (
-                                    <div className=' text-xs mb-1' key={index}>{error}</div>
-                                ))}
-                            </AlertDescription>
-                        </Alert>
-                    )}
-                </div>
-                <Card className="w-full max-h-md gap-2">
-                    <CardHeader>
-                        <CardTitle>Quick selection</CardTitle>
-                        <CardDescription>
-                            Select a common destination or ZIP code from the list below to quickly fill in the form.
-                        </CardDescription>
-                    </CardHeader>
-                    <ItemGroup className="flex flex-row gap-4 mb-2 p-2">
-                        <Item variant="outline" size="sm" asChild>
-                            <a href="#">
-                                <ItemMedia>
-                                    <ChevronRightIcon className="size-5" />
-                                </ItemMedia>
-                                <ItemContent>
-                                    <ItemTitle>Last visited</ItemTitle>
-                                    <ItemDescription>
-                                        Sorokpolany, 9773
-                                    </ItemDescription>
-                                </ItemContent>
-                            </a>
-                        </Item>
-                        <Item variant="outline" size="sm" asChild>
-                            <a href="#">
-                                <ItemMedia>
-                                    <StarIcon className="size-5" />
-                                </ItemMedia>
-                                <ItemContent>
-                                    <ItemTitle>Most visited</ItemTitle>
-                                    <ItemDescription>
-                                        Berlin, 10115
-                                    </ItemDescription>
-                                </ItemContent>
-                            </a>
-                        </Item>
-                        <Item variant="outline" size="sm" asChild>
-                            <a href="#">
-                                <ItemMedia>
-                                    <EraserIcon className="size-5" />
-                                </ItemMedia>
-                                <ItemContent>
-                                    <ItemTitle>Erease inputs</ItemTitle>
-                                </ItemContent>
-                            </a>
-                        </Item>
-                    </ItemGroup>
-                </Card>
-
+                {(response?.status === 'error' && response?.message) ?
+                    <div className='mb-2 min-h-40'>
+                        {response?.status === 'error' && response?.message && (
+                            <Alert variant='destructive' className="border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-50">
+                                <TriangleAlertIcon />
+                                <AlertTitle>{response.message}</AlertTitle>
+                                <AlertDescription>
+                                    {Object.values(response?.errors || {}).flat().map((error: string, index: number) => (
+                                        <div className='text-xs mb-1' key={index}>{error}</div>
+                                    ))}
+                                </AlertDescription>
+                            </Alert>
+                        )}
+                    </div>
+                    :
+                    <Card className="w-full gap-2 max-h-40 mb-2">
+                        <CardHeader>
+                            <CardTitle>Quick selection</CardTitle>
+                            <CardDescription>
+                                Select a common destination or ZIP code from the list below to quickly fill in the form.
+                            </CardDescription>
+                        </CardHeader>
+                        <ItemGroup className="flex flex-row gap-4 mb-2 p-2">
+                            <Item variant="outline" size="sm" asChild>
+                                <a href="#">
+                                    <ItemMedia>
+                                        <ChevronRightIcon className="size-5" />
+                                    </ItemMedia>
+                                    <ItemContent>
+                                        <ItemTitle>Last visited</ItemTitle>
+                                        <ItemDescription>
+                                            Sorokpolany, 9773
+                                        </ItemDescription>
+                                    </ItemContent>
+                                </a>
+                            </Item>
+                            <Item variant="outline" size="sm" asChild>
+                                <a href="#">
+                                    <ItemMedia>
+                                        <StarIcon className="size-5" />
+                                    </ItemMedia>
+                                    <ItemContent>
+                                        <ItemTitle>Most visited</ItemTitle>
+                                        <ItemDescription>
+                                            Berlin, 10115
+                                        </ItemDescription>
+                                    </ItemContent>
+                                </a>
+                            </Item>
+                            <Item variant="outline" size="sm" asChild onClick={(e) => {
+                                e.preventDefault();
+                                reset(false);
+                            }}>
+                                <a href="#">
+                                    <ItemMedia>
+                                        <EraserIcon className="size-5" />
+                                    </ItemMedia>
+                                    <ItemContent>
+                                        <ItemTitle>Erease</ItemTitle>
+                                        <ItemDescription>
+                                            Clear all input fields
+                                        </ItemDescription>
+                                    </ItemContent>
+                                </a>
+                            </Item>
+                        </ItemGroup>
+                    </Card>
+                }
                 <FieldGroup className='w-full mb-2'>
                     <Field>
                         <FieldLabel htmlFor="date">Date of travel</FieldLabel>
-                        <Input id="date" type='date' name='date' aria-invalid={!!response?.errors?.date} defaultValue={response?.data?.date?.toString()} />
+                        <Input
+                            id="date"
+                            type='date'
+                            name='date'
+                            aria-invalid={!!response?.errors?.date}
+                            defaultValue={response?.data?.date?.toString()}
+                        />
                     </Field>
                 </FieldGroup>
 
