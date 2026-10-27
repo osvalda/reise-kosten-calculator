@@ -36,7 +36,7 @@ import { RiInformation2Line } from "@remixicon/react";
 import { useIstCalc } from '@/hooks/useIstCalc';
 import { InputGroup, InputGroupInput, InputGroupAddon } from '../ui/input-group';
 
-import { ChevronRightIcon, StarIcon, EraserIcon } from "lucide-react"
+import { StarIcon, EraserIcon, RotateCcwClockIcon } from "lucide-react"
 import {
     Item,
     ItemContent,
@@ -185,7 +185,7 @@ export function AddModal({ preferences }: { preferences: PreferencesTable }) {
                             <Item variant="outline" size="sm" asChild>
                                 <a href="#">
                                     <ItemMedia>
-                                        <ChevronRightIcon className="size-5" />
+                                        <RotateCcwClockIcon className="size-5" />
                                     </ItemMedia>
                                     <ItemContent>
                                         <ItemTitle>Last visited</ItemTitle>
