@@ -90,9 +90,16 @@ import {
 } from '@/components/ui/dialog';
 import { deleteTravel } from "@/app/lib/actions";
 import { editTravel, State, FormResponse } from '@/app/lib/actions';
-import { LoaderCircleIcon } from 'lucide-react';
+import { LoaderCircleIcon, ClockArrowUp, ClockArrowDown } from 'lucide-react';
 import { toast } from "sonner";
 import TimeInputWrapper from './time-input-wrapper';
+import Image from "next/image";
+import {
+    QueryClientProvider,
+    QueryClient,
+} from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const columns: ColumnDef<TravelsTable>[] = [
     {
@@ -140,9 +147,11 @@ const columns: ColumnDef<TravelsTable>[] = [
         accessorKey: "zip",
         header: "Zip Code",
         cell: ({ row }) => (
-            <Badge variant="outline" className="px-1.5 text-muted-foreground">
-                <IconCurrentLocation /> {row.original.zip}
-            </Badge>
+            row.original.zip ?
+                <Badge variant="outline" className="px-1.5 text-muted-foreground">
+                    <IconCurrentLocation /> {row.original.zip}
+                </Badge>
+                : null
         ),
     },
     {
@@ -153,7 +162,7 @@ const columns: ColumnDef<TravelsTable>[] = [
     {
         accessorKey: "end time",
         header: "End time",
-        cell: ({ row }) => {return formatDuration(row.original.end_time)}
+        cell: ({ row }) => { return formatDuration(row.original.end_time) }
     },
     {
         accessorKey: "duration",
@@ -303,7 +312,9 @@ export function DataTable({
                                 })}
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <AddModal preferences={preferences.preferences} />
+                    <QueryClientProvider client={queryClient}>
+                        <AddModal preferences={preferences.preferences} />
+                    </QueryClientProvider>
                 </div>
             </div>
             {/* Table body */}
@@ -507,50 +518,12 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                     <Separator />
                 </SheetHeader>
                 <div className="flex flex-col gap-4 overflow-y-auto px-6 text-sm">
-                    {!isMobile && (
-                        <>
-                            <ChartContainer config={chartConfig}>
-                                <AreaChart
-                                    accessibilityLayer
-                                    data={chartData}
-                                    margin={{
-                                        left: 0,
-                                        right: 10,
-                                    }}
-                                >
-                                    <CartesianGrid vertical={false} />
-                                    <XAxis
-                                        dataKey="month"
-                                        tickLine={false}
-                                        axisLine={false}
-                                        tickMargin={8}
-                                        tickFormatter={(value) => value.slice(0, 3)}
-                                        hide
-                                    />
-                                    <ChartTooltip
-                                        cursor={false}
-                                        content={<ChartTooltipContent indicator="dot" />}
-                                    />
-                                    <Area
-                                        dataKey="mobile"
-                                        type="natural"
-                                        fill="var(--color-mobile)"
-                                        fillOpacity={0.6}
-                                        stroke="var(--color-mobile)"
-                                        stackId="a"
-                                    />
-                                    <Area
-                                        dataKey="desktop"
-                                        type="natural"
-                                        fill="var(--color-desktop)"
-                                        fillOpacity={0.4}
-                                        stroke="var(--color-desktop)"
-                                        stackId="a"
-                                    />
-                                </AreaChart>
-                            </ChartContainer>
-                        </>
-                    )}
+                    <Image
+                        src="/login.jpg"
+                        width={250}
+                        height={44}
+                        alt="location image"
+                    />
                     <form id={formId} action={editAction} className="flex flex-col gap-4">
                         <div className="flex flex-col gap-3">
                             <Label htmlFor="date">Date</Label>
@@ -587,7 +560,14 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-3">
                                 <Label htmlFor="startTime">Start Time</Label>
-                                <TimeInputWrapper id="startTime" name='startTime' isInvalid={!!response?.errors?.startTime} initTime={response?.data?.startTime || formatDuration(item.start_time)} disabled={isPending} />
+                                <TimeInputWrapper
+                                    id="startTime"
+                                    name='startTime'
+                                    isInvalid={!!response?.errors?.startTime}
+                                    initTime={response?.data?.startTime || formatDuration(item.start_time)}
+                                    disabled={isPending}
+                                    icon={<ClockArrowUp />}
+                                />
                                 <div id="startTime-error" aria-live="polite" aria-atomic="true">
                                     {response?.errors?.startTime &&
                                         response.errors.startTime.map((error: string) => (
@@ -597,7 +577,14 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                             </div>
                             <div className="flex flex-col gap-3">
                                 <Label htmlFor="endTime">End Time</Label>
-                                <TimeInputWrapper id="endTime" name='endTime' isInvalid={!!response?.errors?.endTime} initTime={response?.data?.endTime || formatDuration(item.end_time)} disabled={isPending} />
+                                <TimeInputWrapper
+                                    id="endTime"
+                                    name='endTime'
+                                    isInvalid={!!response?.errors?.endTime}
+                                    initTime={response?.data?.endTime || formatDuration(item.end_time)}
+                                    disabled={isPending}
+                                    icon={<ClockArrowDown />}
+                                />
                                 <div id="endTime-error" aria-live="polite" aria-atomic="true">
                                     {response?.errors?.endTime &&
                                         response.errors.endTime.map((error: string) => (
