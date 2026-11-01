@@ -490,7 +490,7 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                     <IconPencil />
                 </Button>
             </SheetTrigger>
-            <SheetContent side={isMobile ? "bottom" : "right"} className="size-full">
+            <SheetContent side={isMobile ? "bottom" : "right"} className="size-full" onOpenAutoFocus={(e) => e.preventDefault()}>
                 <SheetHeader className="gap-1">
                     <SheetTitle>{item.destination}</SheetTitle>
                     <SheetDescription>
