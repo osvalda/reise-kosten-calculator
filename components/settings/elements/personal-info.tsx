@@ -131,7 +131,7 @@ function PersonalInfo({ userData }: { userData: UserData }) {
           <div className='grid grid-cols-1 gap-6 sm:grid-cols-2'>
             <div className='flex flex-col items-start gap-2'>
               <Label htmlFor='multi-step-personal-info-first-name'>First Name</Label>
-              <Input id='multi-step-personal-info-first-name' defaultValue={userData.user.name} />
+              <Input id='multi-step-personal-info-first-name' defaultValue={userData.user.first_name} />
             </div>
             <div className='flex flex-col items-start gap-2'>
               <Label htmlFor='multi-step-personal-info-last-name'>Last Name</Label>
