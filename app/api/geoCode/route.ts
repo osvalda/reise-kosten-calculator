@@ -24,6 +24,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
             );
         }
 
+        if (!result.data) {
+            return NextResponse.json(
+                { error: 'No data found' },
+                { status: 404 }
+            );
+        }
+
         return NextResponse.json(result.data, { status: 200 });
     } catch (error) {
         console.error('[API Route] Error:', error);

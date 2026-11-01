@@ -99,7 +99,7 @@ import {
     QueryClient,
 } from '@tanstack/react-query';
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient();
 
 const columns: ColumnDef<TravelsTable>[] = [
     {
@@ -238,6 +238,16 @@ export function DataTable({
 }: {
     data: TravelsTable[]
 }) {
+    const [queryClient] = React.useState(
+        () =>
+            new QueryClient({
+                defaultOptions: {
+                    queries: {
+                        staleTime: 60 * 1000,
+                    },
+                },
+            }),
+    )
     const preferences: UserData = usePreferences();
     const [rowSelection, setRowSelection] = React.useState({})
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
