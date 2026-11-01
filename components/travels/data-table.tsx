@@ -27,16 +27,9 @@ import {
     type SortingState,
     type VisibilityState,
 } from "@tanstack/react-table";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-    type ChartConfig,
-} from "@/components/ui/chart";
 import { Checkbox } from "@/components/ui/checkbox"
 import {
     SheetTrigger,
@@ -98,8 +91,6 @@ import {
     QueryClientProvider,
     QueryClient,
 } from '@tanstack/react-query';
-
-// const queryClient = new QueryClient();
 
 const columns: ColumnDef<TravelsTable>[] = [
     {
@@ -452,26 +443,6 @@ export function DataTable({
     )
 }
 
-const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-]
-
-const chartConfig = {
-    desktop: {
-        label: "Desktop",
-        color: "var(--primary)",
-    },
-    mobile: {
-        label: "Mobile",
-        color: "var(--primary)",
-    },
-} satisfies ChartConfig
-
 function SheetOpen({ item }: { item: TravelsTable; }) {
     const isMobile = useIsMobile();
     const [open, setOpen] = React.useState(false);
@@ -528,12 +499,12 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                     <Separator />
                 </SheetHeader>
                 <div className="flex flex-col gap-4 overflow-y-auto px-6 text-sm">
-                    <Image
+                    {/* <Image
                         src="/login.jpg"
                         width={250}
                         height={44}
                         alt="location image"
-                    />
+                    /> */}
                     <form id={formId} action={editAction} className="flex flex-col gap-4">
                         <div className="flex flex-col gap-3">
                             <Label htmlFor="date">Date</Label>
@@ -608,7 +579,7 @@ function SheetOpen({ item }: { item: TravelsTable; }) {
                 <SheetFooter>
                     <Button type="submit" form={formId} disabled={isPending}>
                         {isPending && <LoaderCircleIcon className='animate-spin' />}
-                        Save
+                        Save Changes
                     </Button>
                 </SheetFooter>
 
