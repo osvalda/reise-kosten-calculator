@@ -60,7 +60,7 @@ interface Navbar1Props {
 const Navbar1 = ({
   logo = {
     url: "https://www.anlage.pro/",
-    src: "https://cdn.shadcnblocks.com/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
+    src: "https://cdn.iconscout.com/icon/premium/png-256-thumb/white-star-icon-svg-download-png-2447242.png",
     alt: "logo",
     title: "Anlage.Pro",
   },
@@ -143,8 +143,8 @@ const Navbar1 = ({
   className,
 }: Navbar1Props) => {
   return (
-    <section className={cn("p-4 container mx-auto", className)}>
-      <div className="">
+    <section className={cn("p-4 bg-black text-gray-300", className)}>
+      <div className="container mx-auto">
         {/* Desktop Menu */}
         <nav className="hidden items-center justify-between lg:flex">
           <div className="flex items-center gap-6">
@@ -159,7 +159,7 @@ const Navbar1 = ({
                 {logo.title}
               </span>
             </a>
-            <div className="flex items-center">
+            <div className="flex items-center dark">
               <NavigationMenu>
                 <NavigationMenuList>
                   {menu.map((item) => renderMenuItem(item))}

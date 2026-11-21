@@ -44,7 +44,7 @@ type Props = Partial<Footer2Props>;
 const defaultProps: Footer2Props = {
   logo: {
     url: "https://www.anlage.pro/",
-    src: "/images/logo/shadcnblocks-logo-word.svg",
+    src: "https://cdn.iconscout.com/icon/premium/png-256-thumb/white-star-icon-svg-download-png-2447242.png",
     alt: "logo",
     title: "Anlage.Pro",
   },
@@ -128,7 +128,7 @@ const Footer2 = (props: Props) => {
             </div>
             {visibleSections.map((section, sectionIdx) => (
               <div key={sectionIdx}>
-                <h3 className="mb-4 text-sm font-semibold tracking-tight">
+                <h3 className="mb-4 text-sm text-gray-300 font-semibold tracking-tight">
                   {section.title}
                 </h3>
                 <ul className="space-y-4 text-sm text-muted-foreground">

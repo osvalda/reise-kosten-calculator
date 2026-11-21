@@ -13,7 +13,7 @@ export default function Page() {
           </p> */}
         </div>
       </div>
-      <Footer2 />
+      <Footer2 className="bg-black" />
     </div>
   )
 }

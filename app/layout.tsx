@@ -31,7 +31,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", roboto.variable, notoSansHeading.variable)}
+      className={cn("antialiased bg-black", fontMono.variable, "font-sans", roboto.variable, notoSansHeading.variable)}
     >
       <body>
         {children}
