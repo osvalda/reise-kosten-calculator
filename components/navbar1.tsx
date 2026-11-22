@@ -169,7 +169,7 @@ const Navbar1 = ({
           </div>
           <div className="flex gap-2">
             <Link href="/dashboard">
-              <Button variant="outline" size="sm">
+              <Button variant="secondary" size="sm">
                 {auth.login.title}
               </Button>
             </Link>
