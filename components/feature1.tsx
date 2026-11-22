@@ -27,9 +27,9 @@ interface FeatureSingleFocusProps {
 type Props = Partial<FeatureSingleFocusProps>;
 
 const defaultProps: FeatureSingleFocusProps = {
-  heading: "Ship the roadmap your team actually believes in.",
+  heading: "Manage your travel expenses efficiently.",
   description:
-    "Shadcnblocks gives product and design teams a single place to plan, review, and launch. Connect strategy to execution with blocks that stay on-brand and ready to ship.",
+    "AnlagePro is a travel cost collector and calculator app that helps you manage your travel expenses efficiently.",
   buttons: {
     secondary: {
       text: "Learn more",

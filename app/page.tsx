@@ -8,9 +8,9 @@ export default function Page() {
   return (
     <div className="flex flex-col">
       <Navbar1 />
+      <Hero47 />
       <Hero45 />
       <Feature1 />
-      <Hero47 />
       <Footer2 className="bg-black" />
     </div>
   )

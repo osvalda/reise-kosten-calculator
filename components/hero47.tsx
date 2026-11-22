@@ -24,13 +24,13 @@ interface Hero47Props {
 }
 
 const Hero47 = ({
-  heading = "Epic Blocks",
-  subheading = " built with shadcn/ui & Tailwind",
-  description = "Finely crafted components built with React, Tailwind and Shadcn UI. Developers can copy and paste these blocks directly into their project.",
+  heading = "AnlagePro",
+  subheading = " travel cost collector and calculator app",
+  description = "Conviniently collect and calculate your travel expenses with AnlagePro, the ultimate travel cost management app.",
   buttons = {
     primary: {
       text: "Get Started",
-      url: "#",
+      url: "/dashboard",
     },
     secondary: {
       text: "Read the docs",

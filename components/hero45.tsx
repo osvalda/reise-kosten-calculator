@@ -1,7 +1,7 @@
 "use client";
 
 import { Braces, Cpu, Keyboard } from "lucide-react";
-import React, { useState } from "react";
+import React, { ElementType, useState } from "react";
 import { cn } from "cn";
 
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +31,7 @@ interface HeroFeatureSliderProps {
   className?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface Hero45Props extends HeroFeatureSliderProps {}
 type Props = Partial<Hero45Props>;
 
