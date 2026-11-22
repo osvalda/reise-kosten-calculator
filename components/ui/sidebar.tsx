@@ -517,7 +517,7 @@ function SidebarMenuButton({
       data-active={isActive}
       className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
       onClick={(event) => {
-        (event)
+        props.onClick?.(event)
         setOpenMobile(false)
       }}
       {...props}
